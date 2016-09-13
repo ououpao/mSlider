@@ -1,2 +1,5 @@
 # eSlider
-slider for mobile apps
+:point_right: DEMO
+
+# API
+updating
