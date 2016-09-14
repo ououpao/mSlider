@@ -11,7 +11,19 @@
 <body>
   <div id="slider" class="slider">
   </div>
-  <script src="./slider.js"></script>
+  <script src="http://cdn.rawgit.com/kraaas/eSlider/master/dist/eSlider.min.js"></script>
+  <script>
+  var eSlider = Slider({
+    el: '#slider',
+    data: [
+      './img/slider1.png',
+      './img/slider2.png',
+      './img/slider3.png',
+      './img/slider4.png',
+      './img/slider5.png'
+    ]
+  })
+  </script>
 </body>
 
 </html>
