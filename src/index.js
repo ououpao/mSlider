@@ -88,6 +88,8 @@
     }
   }
 
+  Slider.transtionFns = transtionFns
+
   function Slider(opt) {
     // options
     this.opt = uilt.extend({}, opt)

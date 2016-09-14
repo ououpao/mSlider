@@ -4,7 +4,19 @@
   "description": "simple slider for mobile apps",
   "main": "dist/eSlide.min.js",
   "scripts": {
-    "build": "gulp build"
+    "build": "gulp build",
+    "test": "karma start"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-clean-css": "^2.0.12",
+    "gulp-rename": "^1.2.2",
+    "gulp-uglify": "^2.0.0",
+    "karma": "^1.3.0",
+    "karma-chrome-launcher": "^2.0.0",
+    "karma-coverage": "^1.1.1",
+    "karma-mocha": "^1.1.1",
+    "mocha": "^3.0.2"
   },
   "repository": {
     "type": "git",
@@ -12,18 +24,15 @@
   },
   "keywords": [
     "slider",
-    "webapp"
+    "mobile",
+    "webapp",
+    "hybrid",
+    "javascript"
   ],
   "author": "kraaas",
-  "license": "ISC",
   "bugs": {
     "url": "https://github.com/kraaas/eSlider/issues"
   },
   "homepage": "https://github.com/kraaas/eSlider#readme",
-  "devDependencies": {
-    "gulp": "^3.9.0",
-    "gulp-clean-css": "^2.0.12",
-    "gulp-rename": "^1.2.2",
-    "gulp-uglify": "^2.0.0"
-  }
+  "license": "MIT"
 }
