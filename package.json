@@ -1,0 +1,29 @@
+{
+  "name": "eSlider",
+  "version": "0.0.1",
+  "description": "simple slider for mobile apps",
+  "main": "dist/eSlide.min.js",
+  "scripts": {
+    "build": "gulp build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kraaas/eSlider.git"
+  },
+  "keywords": [
+    "slider",
+    "webapp"
+  ],
+  "author": "kraaas",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kraaas/eSlider/issues"
+  },
+  "homepage": "https://github.com/kraaas/eSlider#readme",
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-clean-css": "^2.0.12",
+    "gulp-rename": "^1.2.2",
+    "gulp-uglify": "^2.0.0"
+  }
+}

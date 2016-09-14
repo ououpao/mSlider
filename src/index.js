@@ -1,5 +1,3 @@
-'use strict';
-
 /*!
  * eSlider.js v0.0.1
  * @author kraaas
@@ -7,10 +5,12 @@
  *   570453516@qq.com
  * Released under the MIT License.
  */
+'use strict';
 
 (function(window, factory) {
   var Slider = factory()
   Slider.VERSION = '0.0.1'
+
   function sliderCreator(opt) {
     return new Slider(opt)
   }
