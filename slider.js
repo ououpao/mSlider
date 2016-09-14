@@ -1,5 +1,33 @@
-(function(window) {
+'use strict';
 
+/*!
+ * eSlider.js v0.0.1
+ * @author kraaas
+ *   https://github.com/kraaas
+ *   570453516@qq.com
+ * Released under the MIT License.
+ */
+
+(function(window, factory) {
+  var Slider = factory()
+  Slider.VERSION = '0.0.1'
+  function sliderCreator(opt) {
+    return new Slider(opt)
+  }
+  /**
+   * umd
+   */
+  if (typeof require === 'function' && typeof module === 'object' && module && typeof exports === 'object' && exports) {
+    module.exports = sliderCreator
+  } else if (typeof define === 'function' && define['amd']) {
+    define(function() {
+      return sliderCreator
+    });
+  } else {
+    window['Slider'] = sliderCreator
+  }
+
+})(window, function() {
   var uilt = {
     query: function(el) {
       if (el && el.nodetype !== 1) {
@@ -7,35 +35,52 @@
       }
       return el
     },
-    error: function(error) {
-      throw new Error(error)
-    }
+    extend: (function() {
+      return Object.assign || function(target) {
+        if (target == null) {
+          throw new TypeError('Cannot convert undefined or null to object')
+        }
+        target = Object(target)
+        for (var index = 1; index < arguments.length; index++) {
+          var source = arguments[index]
+          if (source != null) {
+            for (var key in source) {
+              if (source.hasOwnProperty(key)) {
+                target[key] = source[key];
+              }
+            }
+          }
+        }
+        return target;
+      }
+    })()
   }
 
   var transtionFns = {
-    normal: function(el, prev, current, forward, offset, width) {
-      el.style.transition = 'none'
-      el.style.zIndex = 0
+    /**
+     * transition type
+     * @param  {Element} slide       [each slide]
+     * @param  {Element} prev     [prev slide]
+     * @param  {Element} current  [current slide]
+     * @param  {Element} next     [next slide]
+     * @param  {Number} offset    [move distance]
+     * @param  {Number} width     [container width]
+     * @return {}
+     */
+    normal: function(slide, prev, current, next, offset, width) {
+      slide.style.transition = 'none'
+      slide.style.zIndex = 0
       prev.style.transform = 'translateX(' + (offset - width) + 'px)'
       current.style.transform = 'translateX(' + offset + 'px)'
       current.style.zIndex = 2
-      forward.style.transform = 'translateX(' + (offset + width) + 'px)'
+      next.style.transform = 'translateX(' + (offset + width) + 'px)'
     },
-    /**
-     * fade animation
-     * @param  {Element} el      [description]
-     * @param  {Element} prev    [description]
-     * @param  {Element} current [description]
-     * @param  {Element} forward [description]
-     * @param  {Number} offset  [description]
-     * @param  {Number} width   [description]
-     * @return {[type]}         [description]
-     */
-    fade: function(el, prev, current, forward, offset, width) {
-      el.style.zIndex = 0
-      el.style.opacity = 0
+
+    fade: function(slide, prev, current, next, offset, width) {
       var opacity = Math.abs(offset) / width
-      var next = offset >= 0 ? prev : forward
+      next = offset >= 0 ? prev : next
+      slide.style.zIndex = 0
+      slide.style.opacity = 0
       next.style.zIndex = 1
       next.style.opacity = opacity
       current.style.zIndex = 2
@@ -44,43 +89,53 @@
   }
 
   function Slider(opt) {
-    // config
-    this.opt = opt
-      // container
+    // options
+    this.opt = uilt.extend({}, opt)
+
+    // container
     this.el = uilt.query(this.opt.el)
 
     this.width = this.el.offsetWidth
 
-    // items
-    this.els = []
+    // slide data
+    this.data = this.opt.data || []
 
-    this.axis = 'X'
+    // slides compiled with data
+    this.slides = []
 
-    this.dots = []
+    // slide direction: X(default) | Y
+    this.axis = this.opt.vertical ? 'Y' : 'X'
 
     // transtion animation: normal(default) | fade
     this.transtionName = this.opt.transtionName || 'normal'
 
     this.transtionFn = transtionFns[this.transtionName]
 
+    // unit: ms
     this.transtionTime = 300
 
     this.isAutoPlay = true
 
     this.autoPlayTimer = null
 
+    // suspending time. unit: ms
     this.duration = this.opt.duration || 2000
 
+    // init index of slides
     this.currentIndex = 0
 
     this.nextIndex = 0
 
+    // show the indicator. true(default)
     this.showDot = true
 
-    this.offset = {}
+    this.dots = []
 
-    // left | center(default) | right
+    // indicator's position: left | center(default) | right
     this.dotPosition = this.opt.dotPosition || 'center'
+
+    // touch distance
+    this.offset = {}
 
     this.prefixCls = 'slider'
 
@@ -95,87 +150,105 @@
     constructor: Slider,
 
     init: function() {
-      if (!this.el) {
-        uilt.error('el(selector or Element) is requied!')
+      if (!this.el || this.el.nodeType != 1) {
+        throw new TypeError('el should be a String or Element!')
       }
+
       this.render()
+
       this.bindEvent()
 
+      // set transition style
       if (this.transtionName === 'normal') {
-        this.setElsPosition()
+        this.setSlidesPosition()
       }
-
       this.setTransitionStyle()
 
-      // first
+      // first render
       this.slideTo(this.currentIndex)
+
       this.isAutoPlay && this.autoPlay()
     },
 
+    /**
+     * render the dom with dataList
+     * @return {} 
+     */
     render: function() {
-      var data = this.opt.data || []
-      var _this = this
 
-      renderMain()
+      renderMain.call(this)
 
-      this.showDot && renderDot()
+      this.showDot && renderDot.call(this)
 
+      /**
+       * render all slides
+       * @return {} 
+       */
       function renderMain() {
         var ul = document.createElement('ul')
-        ul.classList.add(_this.prefixCls + '_wrap')
-        data.forEach(function(item, index) {
+        ul.classList.add(this.prefixCls + '_wrap')
+        this.data.forEach((function(item, index) {
           // li
           var li = document.createElement('li')
-          li.classList.add(_this.itemPrefixCls)
-            // if (index == _this.currentIndex) {
-            //   li.classList.add(_this.itemPrefixCls + '--active')
-            // }
-            // img
+          li.classList.add(this.itemPrefixCls)
+
           var img = document.createElement('img')
-          img.classList.add(_this.prefixCls + '_img')
+          img.classList.add(this.prefixCls + '_img')
           img.src = item
 
           li.appendChild(img)
           ul.appendChild(li)
-          _this.els.push(li)
-        })
-        _this.el.appendChild(ul)
+          this.slides.push(li)
+        }).bind(this))
+        this.el.appendChild(ul)
       }
 
+      /**
+       * render the indicator when showDot is true
+       * @return {} 
+       */
       function renderDot() {
         // outer wrap 
         var outer = document.createElement('div')
-        var cls = _this.dotPrefixCls + '-outer'
-        outer.classList.add(cls, cls + '--' + _this.dotPosition)
+        var cls = this.dotPrefixCls + '-outer'
+        outer.classList.add(cls, cls + '--' + this.dotPosition)
 
         // ul
         var ul = document.createElement('ul')
-        ul.classList.add(_this.dotPrefixCls + '-inner')
+        ul.classList.add(this.dotPrefixCls + '-inner')
 
-        data.forEach(function(item, index) {
+        this.data.forEach((function(item, index) {
           // li
           var li = document.createElement('li')
-          li.classList.add(_this.dotPrefixCls)
-          if (index == _this.currentIndex) {
-            li.classList.add(_this.dotPrefixCls + '--active')
+          li.classList.add(this.dotPrefixCls)
+          if (index == this.currentIndex) {
+            li.classList.add(this.dotPrefixCls + '--active')
           }
           // ul
           ul.appendChild(li)
-          _this.dots.push(li)
-        })
+          this.dots.push(li)
+        }).bind(this))
         outer.appendChild(ul)
-        _this.el.appendChild(outer)
+        this.el.appendChild(outer)
       }
     },
 
+    /**
+     * bind touch envents
+     * @return {} 
+     */
     bindEvent: function() {
-      var _this = this
       this.el.addEventListener('touchstart', this.eventHandler.bind(this))
       this.el.addEventListener('touchmove', this.eventHandler.bind(this))
       this.el.addEventListener('touchend', this.eventHandler.bind(this))
       this.el.addEventListener('touchcancel', this.eventHandler.bind(this))
     },
 
+    /**
+     * event handler
+     * @param  {Event} e 
+     * @return {}   
+     */
     eventHandler: function(e) {
       e.preventDefault()
       switch (e.type) {
@@ -192,6 +265,11 @@
       }
     },
 
+    /**
+     * touchstart handler
+     * @param  {Event} e 
+     * @return {}   
+     */
     startHandler: function(e) {
       this.offset = {}
       this.pause()
@@ -200,15 +278,24 @@
       this.startTime = new Date().getTime()
     },
 
+    /**
+     * touchmove handler
+     * @param  {Event} e 
+     * @return {}   
+     */
     moveHandler: function(e) {
       var offset = {}
-      var _this = this
       offset.X = e.targetTouches[0].pageX - this.startX
       offset.Y = e.targetTouches[0].pageY - this.startY
       this.offset = offset
       this.transition(this.offset.X)
     },
 
+    /**
+     * touchend handler
+     * @param  {Event} e 
+     * @return {}   
+     */
     endHandler: function(e) {
       var endTime = new Date().getTime()
       var boundary = endTime - this.startTime > 300 ? this.width / 2 : 14
@@ -221,6 +308,11 @@
       }
     },
 
+    /**
+     * switch slides
+     * @param  {Number} nextIndex [the next slide's index (start form 0)] 
+     * @return {}
+     */
     slideTo: function(nextIndex) {
       this.isAutoPlay && this.pause()
       this.nextIndex = this.getNextIndex(nextIndex)
@@ -231,69 +323,86 @@
       this.setTransitionStyle()
     },
 
+    /**
+     * transition animation when switch 
+     * @param  {Number} offset [touch distance]
+     * @return {}
+     */
     transition: function(offset) {
-      var _this = this
       var prevIndex = this.getNextIndex(this.currentIndex - 1)
       var nextIndex = this.getNextIndex(this.currentIndex + 1)
-      this.els.forEach(function(el, index) {
-        _this.transtionFn(el, _this.els[prevIndex], _this.els[_this.currentIndex], _this.els[nextIndex], offset, _this.width)
-      })
+      this.slides.forEach((function(slide, index) {
+        this.transtionFn(slide, this.slides[prevIndex], this.slides[this.currentIndex], this.slides[nextIndex], offset, this.width)
+      }).bind(this))
     },
 
+    /**
+     * get the next index
+     * eg: the slides's length is 5, 
+     * the max index you can get is 4 and min is 0
+     * @param  {[type]} nextIndex [description]
+     * @return {[type]}           [description]
+     */
     getNextIndex: function(nextIndex) {
-      var max = this.els.length - 1
+      var max = this.slides.length - 1
       nextIndex = nextIndex > max ? 0 : nextIndex < 0 ? max : nextIndex
       return nextIndex
     },
 
-    setElsPosition: function() {
-      var _this = this
-      this.els.forEach(function(el, index) {
+    /**
+     * set slides position when 
+     * the tansition type is normal
+     */
+    setSlidesPosition: function() {
+      this.slides.forEach((function(el, index) {
         var x
-        if (index === _this.currentIndex) {
+        if (index === this.currentIndex) {
           x = 0
         } else {
-          x = (index - _this.currentIndex) * _this.width
+          x = (index - this.currentIndex) * this.width
         }
         el.style.transform = 'translateX(' + x + 'px)'
-      })
+      }).bind(this))
     },
 
+    /**
+     * set slides style when transition 
+     */
     setTransitionStyle: function() {
-      var _this = this
-      this.els.forEach(function(el, index) {
-        el.style.transition = 'all ' + _this.transtionTime / 1000 + 's ease'
-      })
+      this.slides.forEach((function(el, index) {
+        el.style.transition = 'all ' + this.transtionTime + 'ms ease'
+      }).bind(this))
     },
 
+    /**
+     * set dot style when active
+     * @param {} 
+     */
     setDot: function(nextIndex) {
       this.dots[this.currentIndex].classList.remove('slider_dot--active')
       this.dots[this.nextIndex].classList.add('slider_dot--active')
     },
 
+    /**
+     * init auto play
+     * @return {}
+     */
     autoPlay: function() {
-      var _this = this
       this.pause()
-      this.autoPlayTimer = setTimeout(function() {
-        _this.slideTo(_this.currentIndex + 1)
-        _this.autoPlay()
-      }, this.duration)
+      this.autoPlayTimer = setTimeout((function() {
+        this.slideTo(this.currentIndex + 1)
+        this.autoPlay()
+      }).bind(this), this.duration)
     },
 
+    /**
+     * stop auto paly when transition
+     * @return {}
+     */
     pause: function() {
       clearTimeout(this.autoPlayTimer)
     }
   }
 
-  new Slider({
-    el: '#slider',
-    data: [
-      './img/slider1.png',
-      './img/slider2.png',
-      './img/slider3.png',
-      './img/slider4.png',
-      './img/slider5.png'
-    ]
-  })
-
-})(window)
+  return Slider
+})
