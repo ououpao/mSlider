@@ -1,6 +1,6 @@
 ## eSlider
 simple & classicle slider for web apps. providers 2 transitions, fade and translateX.  
-:point_right: [DEMO](https://kraaas.github.io/eSlider/)
+:point_right: [DEMO](https://kraaas.github.io/eSlider/)  
 ![](https://raw.githubusercontent.com/kraaas/eSlider/master/demo/img/qrcode.png)
 
 ## 安装
