@@ -71,9 +71,9 @@
       slide.style.transition = 'none'
       slide.style.zIndex = 0
       prev.style.transform = 'translateX(' + (offset - width) + 'px)'
+      next.style.transform = 'translateX(' + (offset + width) + 'px)'
       current.style.transform = 'translateX(' + offset + 'px)'
       current.style.zIndex = 2
-      next.style.transform = 'translateX(' + (offset + width) + 'px)'
     },
 
     fade: function(slide, prev, current, next, offset, width) {
@@ -97,6 +97,10 @@
     // container
     this.el = uilt.query(this.opt.el)
 
+    if (!this.el || this.el.nodeType != 1) {
+      throw new TypeError('el should be a selector(String) or an Element!')
+    }
+
     this.width = this.el.offsetWidth
 
     // slide data
@@ -116,12 +120,14 @@
     // unit: ms
     this.transtionTime = 300
 
-    this.isAutoPlay = true
+    this.autoPlay = false
 
     this.autoPlayTimer = null
 
+    this.loop = false
+
     // suspending time. unit: ms
-    this.duration = this.opt.duration || 2000
+    this.duration = this.opt.duration || 500
 
     // init index of slides
     this.currentIndex = 0
@@ -152,9 +158,7 @@
     constructor: Slider,
 
     init: function() {
-      if (!this.el || this.el.nodeType != 1) {
-        throw new TypeError('el should be a String or Element!')
-      }
+
 
       this.render()
 
@@ -169,7 +173,7 @@
       // first render
       this.slideTo(this.currentIndex)
 
-      this.isAutoPlay && this.autoPlay()
+      this.autoPlay && this.autoPlayAction()
     },
 
     /**
@@ -288,8 +292,14 @@
     moveHandler: function(e) {
       var offset = {}
       offset.X = e.targetTouches[0].pageX - this.startX
-      offset.Y = e.targetTouches[0].pageY - this.startY
+      // offset.Y = e.targetTouches[0].pageY - this.startY
       this.offset = offset
+
+      var nextIndex = this.getNextIndex(offset.X > 0 ? this.currentIndex - 1 : this.currentIndex + 1)
+      console.log(this.currentIndex, nextIndex)
+      if((this.currentIndex == nextIndex || nextIndex == 0) && !this.loop) {
+        return 
+      }
       this.transition(this.offset.X)
     },
 
@@ -316,12 +326,12 @@
      * @return {}
      */
     slideTo: function(nextIndex) {
-      this.isAutoPlay && this.pause()
+      this.autoPlay && this.pause()
       this.nextIndex = this.getNextIndex(nextIndex)
       this.showDot && this.setDot(this.nextIndex)
       this.currentIndex = this.nextIndex
-      this.transition(0, true)
-      this.isAutoPlay && this.autoPlay()
+      this.transition(0)
+      this.autoPlay && this.autoPlayAction()
       this.setTransitionStyle()
     },
 
@@ -331,6 +341,7 @@
      * @return {}
      */
     transition: function(offset) {
+      var max = this.slides.length - 1
       var prevIndex = this.getNextIndex(this.currentIndex - 1)
       var nextIndex = this.getNextIndex(this.currentIndex + 1)
       this.slides.forEach((function(slide, index) {
@@ -347,7 +358,11 @@
      */
     getNextIndex: function(nextIndex) {
       var max = this.slides.length - 1
-      nextIndex = nextIndex > max ? 0 : nextIndex < 0 ? max : nextIndex
+      if (this.loop) {
+        nextIndex = nextIndex > max ? 0 : nextIndex < 0 ? max : nextIndex
+      } else {
+        nextIndex = nextIndex >= max ? max : nextIndex < 0 ? 0 : nextIndex
+      }
       return nextIndex
     },
 
@@ -389,11 +404,11 @@
      * init auto play
      * @return {}
      */
-    autoPlay: function() {
+    autoPlayAction: function() {
       this.pause()
       this.autoPlayTimer = setTimeout((function() {
         this.slideTo(this.currentIndex + 1)
-        this.autoPlay()
+        this.autoPlayAction()
       }).bind(this), this.duration)
     },
 
