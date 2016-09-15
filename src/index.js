@@ -291,16 +291,27 @@
      */
     moveHandler: function(e) {
       var offset = {}
+      var nextIndex
+      var addend
       offset.X = e.targetTouches[0].pageX - this.startX
       // offset.Y = e.targetTouches[0].pageY - this.startY
       this.offset = offset
 
-      var nextIndex = this.getNextIndex(offset.X > 0 ? this.currentIndex - 1 : this.currentIndex + 1)
-      console.log(this.currentIndex, nextIndex)
-      if((this.currentIndex == nextIndex || nextIndex == 0) && !this.loop) {
-        return 
-      }
+      // when loop config is false 
+      // cancle transition when slide
+      // index is the max or min.
+      addend = offset.X > 0 ? -1 : 1
+      nextIndex = this.getNextIndex(this.currentIndex + addend)
+      if((isStart.call(this) || isEnd.call(this))  && !this.loop) return
+
       this.transition(this.offset.X)
+
+      function isStart() {
+        return this.currentIndex == 0 && nextIndex == 0
+      }
+
+      function isEnd() {
+        return this.currentIndex == nextIndex
     },
 
     /**
