@@ -92,7 +92,15 @@
 
   function Slider(opt) {
     // options
-    this.opt = uilt.extend({}, opt)
+    this.opt = uilt.extend({
+      data: [],
+      autoPlay: true,
+      loop: true,
+      duration: 3000,
+      transtionName: 'normal',
+      dotPosition: 'center',
+      vertical: false,
+    }, opt)
 
     // container
     this.el = uilt.query(this.opt.el)
@@ -104,7 +112,7 @@
     this.width = this.el.offsetWidth
 
     // slide data
-    this.data = this.opt.data || []
+    this.data = this.opt.data
 
     // slides compiled with data
     this.slides = []
@@ -113,21 +121,23 @@
     this.axis = this.opt.vertical ? 'Y' : 'X'
 
     // transtion animation: normal(default) | fade
-    this.transtionName = this.opt.transtionName || 'normal'
+    this.transtionName = this.opt.transtionName
 
     this.transtionFn = transtionFns[this.transtionName]
 
     // unit: ms
     this.transtionTime = 300
 
-    this.autoPlay = false
+    // auto play: true(defualt)
+    this.autoPlay = this.opt.autoPlay
 
     this.autoPlayTimer = null
 
-    this.loop = false
+    // loop play: true(default)
+    this.loop = this.opt.loop
 
-    // suspending time. unit: ms
-    this.duration = this.opt.duration || 500
+    // suspending time. unit: ms | 3000ms(default)
+    this.duration = this.opt.duration
 
     // init index of slides
     this.currentIndex = 0
@@ -140,7 +150,7 @@
     this.dots = []
 
     // indicator's position: left | center(default) | right
-    this.dotPosition = this.opt.dotPosition || 'center'
+    this.dotPosition = this.opt.dotPosition
 
     // touch distance
     this.offset = {}
@@ -158,8 +168,6 @@
     constructor: Slider,
 
     init: function() {
-
-
       this.render()
 
       this.bindEvent()
@@ -312,6 +320,7 @@
 
       function isEnd() {
         return this.currentIndex == nextIndex
+      }
     },
 
     /**
