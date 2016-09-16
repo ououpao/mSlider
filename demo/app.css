@@ -51,9 +51,11 @@
 }
 
 
-/*dot*/
+/*indicator*/
 
-.slider_dot-outer {
+
+
+.slider_indicator-outer {
   position: absolute;
   width: 100%;
   bottom: 0;
@@ -63,22 +65,22 @@
   z-index: 10;
 }
 
-.slider_dot-outer--left {
+.slider_indicator--left {
   text-align: left;
 }
 
-.slider_dot-outer--right {
+.slider_indicator--right {
   text-align: right;
 }
 
-.slider_dot-inner {
+.slider_indicator--normal .slider_indicator-inner {
   display: inline-block;
   padding: 4px 5px;
   border-radius: 20px;
   background: rgba(0, 0, 0, 0.36);
 }
 
-.slider_dot {
+.slider_indicator--normal .slider_dot {
   display: inline-block;
   font-size: 14px;
   width: 5px;
@@ -89,6 +91,23 @@
   transition: all .3s;
 }
 
-.slider_dot--active {
+.slider_indicator--normal .slider_dot--active {
   background: #ff8100;
 }
+
+.slider_indicator--circle .slider_indicator-inner {
+  display: inline-block;
+  width: 35px;
+  height: 35px;
+  font-size: 12px;
+  text-align: center;
+  line-height: 35px;
+  color: #696969;
+  background-color: rgba(31, 30, 30, 0.72);
+  border-radius: 35px;
+}
+.slider_indicator--circle .slider_circle-current {
+  color: #8C8A8A;
+  font-size: 18px;
+}
+

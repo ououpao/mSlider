@@ -99,8 +99,9 @@
       autoPlay: true,
       loop: true,
       duration: 3000,
-      transtionName: 'normal',
-      dotPosition: 'center',
+      transtionType: 'normal',
+      indicatorPos: 'center',
+      indicatorType: 'normal',
       vertical: false,
     }, opt)
 
@@ -125,9 +126,9 @@
     this.axis = this.opt.vertical ? 'Y' : 'X'
 
     // transtion animation: normal(default) | fade
-    this.transtionName = this.opt.transtionName
+    this.transtionType = this.opt.transtionType
 
-    this.transtionFn = transtionFns[this.transtionName]
+    this.transtionFn = transtionFns[this.transtionType]
 
     // unit: ms
     this.transtionTime = 300
@@ -154,7 +155,9 @@
     this.dots = []
 
     // indicator's position: left | center(default) | right
-    this.dotPosition = this.opt.dotPosition
+    this.indicatorPos = this.opt.indicatorPos
+
+    this.indicatorType = this.opt.indicatorType
 
     // touch distance
     this.offset = {}
@@ -163,7 +166,7 @@
 
     this.itemPrefixCls = 'slider_item'
 
-    this.dotPrefixCls = 'slider_dot'
+    this.indicatorPrefixCls = 'slider_indicator'
 
     this.init()
   }
@@ -177,7 +180,7 @@
       this.bindEvent()
 
       // set transition style
-      if (this.transtionName === 'normal') {
+      if (this.transtionType === 'normal') {
         this.setSlidesPosition()
       }
       this.setTransitionStyle()
@@ -196,7 +199,7 @@
 
       renderMain.call(this)
 
-      this.showDot && renderDot.call(this)
+      this.showDot && renderIndicator.call(this)
 
       /**
        * render all slides
@@ -225,28 +228,46 @@
        * render the indicator when showDot is true
        * @return {} 
        */
-      function renderDot() {
+      function renderIndicator() {
         // outer wrap 
         var outer = document.createElement('div')
-        var cls = this.dotPrefixCls + '-outer'
-        outer.classList.add(cls, cls + '--' + this.dotPosition)
-
-        // ul
-        var ul = document.createElement('ul')
-        ul.classList.add(this.dotPrefixCls + '-inner')
-
-        this.data.forEach((function(item, index) {
-          // li
-          var li = document.createElement('li')
-          li.classList.add(this.dotPrefixCls)
-          if (index == this.currentIndex) {
-            li.classList.add(this.dotPrefixCls + '--active')
-          }
+        outer.classList.add(
+          this.indicatorPrefixCls + '-outer',
+          this.indicatorPrefixCls + '--' + this.indicatorPos,
+          this.indicatorPrefixCls + '--' + this.indicatorType
+        )
+        if (this.indicatorType == 'normal') {
           // ul
-          ul.appendChild(li)
-          this.dots.push(li)
-        }).bind(this))
-        outer.appendChild(ul)
+          var normalPrefixCls = this.normalPrefixCls = 'slider_dot'
+          var inner = document.createElement('ul')
+          inner.classList.add(this.indicatorPrefixCls + '-inner')
+
+          this.data.forEach((function(item, index) {
+            // li
+            var li = document.createElement('li')
+            li.classList.add(normalPrefixCls)
+            if (index == this.currentIndex) {
+              li.classList.add(normalPrefixCls + '--active')
+            }
+            // ul
+            inner.appendChild(li)
+            this.dots.push(li)
+          }).bind(this))
+          outer.appendChild(inner)
+        } else {
+          var inner
+          var circleCurrent
+          var circleTotal
+          inner= document.createElement('div')
+          inner.classList.add(this.indicatorPrefixCls + '-inner')
+          circleCurrent = this.circleCurrent = document.createElement('span')
+          circleCurrent.classList.add('slider_circle-current')
+          circleTotal = this.circleTotal = document.createElement('span')
+          circleTotal.textContent = '/' + this.data.length
+          inner.appendChild(circleCurrent)
+          inner.appendChild(circleTotal)
+          outer.appendChild(inner)
+        }
         this.el.appendChild(outer)
       }
     },
@@ -352,7 +373,7 @@
     slideTo: function(nextIndex) {
       this.autoPlay && this.pause()
       this.nextIndex = this.getNextIndex(nextIndex)
-      this.showDot && this.setDot(this.nextIndex)
+      this.showDot && this.switchIndicator(this.nextIndex)
       this.currentIndex = this.nextIndex
       this.transition(0)
       this.autoPlay && this.autoPlayAction()
@@ -419,9 +440,13 @@
      * set dot style when active
      * @param {} 
      */
-    setDot: function(nextIndex) {
-      this.dots[this.currentIndex].classList.remove('slider_dot--active')
-      this.dots[this.nextIndex].classList.add('slider_dot--active')
+    switchIndicator: function(nextIndex) {
+      if (this.indicatorType == 'normal') {
+        this.dots[this.currentIndex].classList.remove(this.normalPrefixCls + '--active')
+        this.dots[this.nextIndex].classList.add(this.normalPrefixCls + '--active')
+      } else {
+        this.circleCurrent.textContent = nextIndex + 1
+      }
     },
 
     /**
