@@ -67,17 +67,19 @@
      * @param  {Number} width     [container width]
      * @return {}
      */
-    normal: function(slide, prev, current, next, offset, width) {
+    normal: function(slide, prev, current, next, axis, offset, width, height) {
+      var wh = axis == 'X' ? width : height
       slide.style.transition = 'none'
       slide.style.zIndex = 0
-      prev.style.transform = 'translateX(' + (offset - width) + 'px)'
-      next.style.transform = 'translateX(' + (offset + width) + 'px)'
-      current.style.transform = 'translateX(' + offset + 'px)'
+      prev.style.transform = 'translate' + axis + '(' + (offset - wh) + 'px)'
+      next.style.transform = 'translate' + axis + '(' + (offset + wh) + 'px)'
+      current.style.transform = 'translate' + axis + '(' + offset + 'px)'
       current.style.zIndex = 2
     },
 
-    fade: function(slide, prev, current, next, offset, width) {
-      var opacity = Math.abs(offset) / width
+    fade: function(slide, prev, current, next, axis, offset, width, height) {
+      var wh = axis == 'X' ? width : height
+      var opacity = Math.abs(offset) / wh
       next = offset >= 0 ? prev : next
       slide.style.zIndex = 0
       slide.style.opacity = 0
@@ -110,6 +112,8 @@
     }
 
     this.width = this.el.offsetWidth
+
+    this.height = this.el.offsetHeight
 
     // slide data
     this.data = this.opt.data
@@ -302,17 +306,17 @@
       var nextIndex
       var addend
       offset.X = e.targetTouches[0].pageX - this.startX
-      // offset.Y = e.targetTouches[0].pageY - this.startY
+      offset.Y = e.targetTouches[0].pageY - this.startY
       this.offset = offset
 
       // when loop config is false 
       // cancle transition when slide
       // index is the max or min.
-      addend = offset.X > 0 ? -1 : 1
+      addend = offset[this.axis] > 0 ? -1 : 1
       nextIndex = this.getNextIndex(this.currentIndex + addend)
-      if((isStart.call(this) || isEnd.call(this))  && !this.loop) return
+      if ((isStart.call(this) || isEnd.call(this)) && !this.loop) return
 
-      this.transition(this.offset.X)
+      this.transition(this.offset[this.axis])
 
       function isStart() {
         return this.currentIndex == 0 && nextIndex == 0
@@ -330,7 +334,7 @@
      */
     endHandler: function(e) {
       var endTime = new Date().getTime()
-      var boundary = endTime - this.startTime > 300 ? this.width / 2 : 14
+      var boundary = endTime - this.startTime > 300 ? (this.opt.vertical ? this.height : this.width) / 2 : 14
       if (this.offset[this.axis] >= boundary) {
         this.slideTo(this.currentIndex - 1)
       } else if (this.offset[this.axis] < -boundary) {
@@ -365,7 +369,7 @@
       var prevIndex = this.getNextIndex(this.currentIndex - 1)
       var nextIndex = this.getNextIndex(this.currentIndex + 1)
       this.slides.forEach((function(slide, index) {
-        this.transtionFn(slide, this.slides[prevIndex], this.slides[this.currentIndex], this.slides[nextIndex], offset, this.width)
+        this.transtionFn(slide, this.slides[prevIndex], this.slides[this.currentIndex], this.slides[nextIndex], this.axis, offset, this.width, this.height)
       }).bind(this))
     },
 
@@ -391,14 +395,14 @@
      * the tansition type is normal
      */
     setSlidesPosition: function() {
+      var x
       this.slides.forEach((function(el, index) {
-        var x
         if (index === this.currentIndex) {
           x = 0
         } else {
-          x = (index - this.currentIndex) * this.width
+          x = (index - this.currentIndex) * (this.opt.vertical ? this.height : this.width)
         }
-        el.style.transform = 'translateX(' + x + 'px)'
+        el.style.transform = 'translate' + this.axis + '(' + x + 'px)'
       }).bind(this))
     },
 
