@@ -72,7 +72,9 @@
     normal: function(slide, prev, current, next, axis, offset, wh) {
       slide.style.transition = 'none'
       slide.style.zIndex = 0
+      prev.style.zIndex = 1
       _.setTransform(prev, axis, offset - wh)
+      next.style.zIndex = 1
       _.setTransform(next, axis, offset + wh)
       _.setTransform(current, axis, offset)
       current.style.zIndex = 2
@@ -399,11 +401,11 @@
     },
 
     slidePrev: function() {
-      this.slideTo(this.getNextIndex(this.currentIndex - 1))
+      this.slideTo(this.currentIndex - 1)
     },
 
     slideNext: function() {
-      this.slideTo(this.getNextIndex(this.currentIndex + 1))
+      this.slideTo(this.currentIndex + 1)
     },
 
     /**
