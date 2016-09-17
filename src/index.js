@@ -10,9 +10,9 @@
 (function(window, factory) {
   var eSlider = factory()
   eSlider.VERSION = '0.0.1'
-  /**
-   * umd
-   */
+    /**
+     * umd
+     */
   if (typeof require === 'function' && typeof module === 'object' && module && typeof exports === 'object' && exports) {
     module.exports = eSlider
   } else if (typeof define === 'function' && define['amd']) {
@@ -31,12 +31,27 @@
       }
       return el
     },
+
     createEl: function(tag) {
       return document.createElement(tag)
     },
-    setTransform: function(el, axis, value) {
+
+    setCSSTransform: function(el, axis, value) {
       el.style.transform = 'translate' + axis + '(' + value + 'px)'
     },
+
+    isPlainObject: function(obj) {
+      if (typeof obj != 'object') return
+      var exit = false
+      var key
+      for (key in obj) {
+        if (obj.hasOwnProperty(key)) {
+          exit = true
+        }
+      }
+      return exit
+    },
+
     extend: (function() {
       return Object.assign || function(target) {
         if (target == null) {
@@ -73,10 +88,10 @@
       slide.style.transition = 'none'
       slide.style.zIndex = 0
       prev.style.zIndex = 1
-      _.setTransform(prev, axis, offset - wh)
+      _.setCSSTransform(prev, axis, offset - wh)
       next.style.zIndex = 1
-      _.setTransform(next, axis, offset + wh)
-      _.setTransform(current, axis, offset)
+      _.setCSSTransform(next, axis, offset + wh)
+      _.setCSSTransform(current, axis, offset)
       current.style.zIndex = 2
     },
 
@@ -92,12 +107,18 @@
     }
   }
 
+  var slideType = {
+    NODE: 'node',
+    IMG: 'img'
+  }
+
   Slider.transtionFns = transtionFns
 
   function Slider(opt) {
     // options
     this.opt = _.extend({
       data: [],
+      initSlide: 0,
       autoPlay: true,
       loop: true,
       duration: 3000,
@@ -152,6 +173,8 @@
 
     this.touchRange = this.opt.touchRange
 
+    this.initSlide = this.opt.initSlide
+
     // init index of slides
     this.currentIndex = 0
 
@@ -180,12 +203,18 @@
   }
 
   Slider.prototype = {
+
     constructor: Slider,
 
     init: function() {
+
+      this.makeSlide()
+
       this.render()
 
       this.bindEvent()
+
+      this.setCurrentIndex()
 
       // set transition style
       if (this.transtionType === 'normal') {
@@ -197,6 +226,26 @@
       this.slideTo(this.currentIndex)
 
       this.autoPlay && this.autoPlayAction()
+    },
+
+    makeSlide: function() {
+      var nodeReg = /^<.*/
+      this.data.forEach(function(item, index, array) {
+        var slide = {
+          type: '',
+          name: '',
+          content: ''
+        }
+        if (typeof item == 'string') {
+          slide.content = item
+          slide.name = index
+        } else if (_.isPlainObject(item)) {
+          slide.content = item.content
+          slide.name = item.name || index
+        }
+        slide.type = nodeReg.test(slide.content) ? slideType.NODE : slideType.IMG
+        array[index] = slide
+      })
     },
 
     /**
@@ -216,16 +265,18 @@
       function renderMain() {
         var ul = _.createEl('ul')
         ul.classList.add(this.prefixCls + '_wrap')
-        this.data.forEach((function(item, index) {
+        this.data.forEach((function(slide, index) {
           // li
           var li = _.createEl('li')
-          li.classList.add(this.itemPrefixCls)
-
           var img = _.createEl('img')
-          img.classList.add(this.prefixCls + '_img')
-          img.src = item
-
-          li.appendChild(img)
+          li.classList.add(this.itemPrefixCls)
+          if (slide.type == slideType.IMG) {
+            img.classList.add(this.prefixCls + '_img')
+            img.src = slide.content
+            li.appendChild(img)
+          } else if (slide.type == slideType.NODE) {
+            li.innerHTML = slide.content
+          }
           ul.appendChild(li)
           this.slides.push(li)
         }).bind(this))
@@ -278,6 +329,26 @@
         }
         this.el.appendChild(outer)
       }
+    },
+
+    setCurrentIndex: function() {
+      var index = 0
+      var exit = false
+      var type = typeof this.initSlide
+      if (type == 'number') {
+        index = this.initSlide
+      } else if (type == 'string') {
+        this.data.forEach((function(slide, i) {
+          if (slide.name == this.initSlide) {
+            index = i
+            exit = true
+          }
+        }).bind(this))
+        if (!exit) {
+          console.error('can\'t find the slide with the name: "' + this.initSlide + '"')
+        }
+      }
+      this.currentIndex = index
     },
 
     /**
@@ -459,7 +530,7 @@
         } else {
           x = (index - this.currentIndex) * this.wh
         }
-        _.setTransform(el, this.axis, x)
+        _.setCSSTransform(el, this.axis, x)
       }).bind(this))
     },
 

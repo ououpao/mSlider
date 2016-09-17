@@ -21,27 +21,31 @@
       './img/slider2.png',
       './img/slider3.png',
       './img/slider4.png',
-      './img/slider5.png'
+      './img/slider5.png',
+      {
+        name: 'first',
+        content: '<img src="./img/slider5.png">'
+      }
     ],
     // two
 
     // data: [{
     //   name: 'first',
-    //   img: '../img.png'
+    //   content: './img/slider1.png'
     // }, {
     //   name: 'second',
-    //   html: '<div>asdf</div>'
+    //   content: '<div>asdf</div>'
     // }],
 
     // three
 
-    // data: [
-    //   './img/slider1.png', 
-    //   {
-    //     name: 'first',
-    //     img: '../img.png'
-    //   }
-    // ]
+    // data: [{
+    //   name: 'first',
+    //   content: './img/slider1.png'
+    // }, {
+    //   name: 'second',
+    //   content: '<div>asdf</div>'
+    // }, './img/slider1.png',],
 
     autoPlay: false,
     loop: false,
@@ -49,7 +53,9 @@
     transtionType: 'normal',
     duration: 2000,
     indicatorPos: 'right',
-    indicatorType: 'circle'
+    indicatorType: 'circle',
+    touchRange: 10,
+    initSlide: 'first'
   })
   </script>
 </body>
