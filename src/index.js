@@ -8,23 +8,19 @@
 'use strict';
 
 (function(window, factory) {
-  var Slider = factory()
-  Slider.VERSION = '0.0.1'
-
-  function sliderCreator(opt) {
-    return new Slider(opt)
-  }
+  var eSlider = factory()
+  eSlider.VERSION = '0.0.1'
   /**
    * umd
    */
   if (typeof require === 'function' && typeof module === 'object' && module && typeof exports === 'object' && exports) {
-    module.exports = sliderCreator
+    module.exports = eSlider
   } else if (typeof define === 'function' && define['amd']) {
     define(function() {
-      return sliderCreator
+      return eSlider
     });
   } else {
-    window['Slider'] = sliderCreator
+    window['eSlider'] = eSlider
   }
 
 })(window, function() {
@@ -291,7 +287,8 @@
         'touchstart',
         'touchmove',
         'touchend',
-        'touchcancel'
+        'touchcancel',
+        'resize'
       ].forEach((function(event) {
         this.el.addEventListener(event, this.eventHandler.bind(this))
       }).bind(this))
@@ -399,6 +396,14 @@
       this.transition(0)
       this.autoPlay && this.autoPlayAction()
       this.setTransitionStyle()
+    },
+
+    slidePrev: function() {
+      this.slideTo(this.getNextIndex(this.currentIndex - 1))
+    },
+
+    slideNext: function() {
+      this.slideTo(this.getNextIndex(this.currentIndex + 1))
     },
 
     /**

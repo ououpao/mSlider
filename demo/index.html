@@ -10,37 +10,12 @@
 
 <body>
   <div id="slider" class="slider">
-    <!-- <ul class="slider_wrap">
-      <li class="slider_item slider_item--active">
-        <img class="slider_img" src="./img/slider1.png" alt="">
-      </li>
-      <li class="slider_item">
-        <img class="slider_img" src="./img/slider2.png" alt="">
-      </li>
-      <li class="slider_item">
-        <img class="slider_img" src="./img/slider3.png" alt="">
-      </li>
-      <li class="slider_item">
-        <img class="slider_img" src="./img/slider4.png" alt="">
-      </li>
-      <li class="slider_item">
-        <img class="slider_img" src="./img/slider5.png" alt="">
-      </li>
-    </ul>
-    <div class="slider_indicator">
-      <ul class="slider_dot-wrap">
-        <li class="slider_dot slider_dot--active"></li>
-        <li class="slider_dot"></li>
-        <li class="slider_dot"></li>
-        <li class="slider_dot"></li>
-        <li class="slider_dot"></li>
-      </ul>
-    </div> -->
   </div>
   <script src="../src/index.js"></script>
   <script>
-  Slider({
+  var slider = new eSlider({
     el: '#slider',
+    // one
     data: [
       './img/slider1.png',
       './img/slider2.png',
@@ -48,6 +23,26 @@
       './img/slider4.png',
       './img/slider5.png'
     ],
+    // two
+
+    // data: [{
+    //   name: 'first',
+    //   img: '../img.png'
+    // }, {
+    //   name: 'second',
+    //   html: '<div>asdf</div>'
+    // }],
+
+    // three
+
+    // data: [
+    //   './img/slider1.png', 
+    //   {
+    //     name: 'first',
+    //     img: '../img.png'
+    //   }
+    // ]
+
     autoPlay: false,
     loop: false,
     vertical: false,
