@@ -28,12 +28,18 @@
   }
 
 })(window, function() {
-  var uilt = {
+  var _ = {
     query: function(el) {
       if (el && el.nodetype !== 1) {
         el = document.querySelector(el)
       }
       return el
+    },
+    createEl: function(tag) {
+      return document.createElement(tag)
+    },
+    setTransform: function(el, axis, value) {
+      el.style.transform = 'translate' + axis + '(' + value + 'px)'
     },
     extend: (function() {
       return Object.assign || function(target) {
@@ -59,26 +65,24 @@
   var transtionFns = {
     /**
      * transition type
-     * @param  {Element} slide       [each slide]
+     * @param  {Element} slide    [each slide]
      * @param  {Element} prev     [prev slide]
      * @param  {Element} current  [current slide]
      * @param  {Element} next     [next slide]
-     * @param  {Number} offset    [move distance]
-     * @param  {Number} width     [container width]
+     * @param  {Number}  offset   [move distance]
+     * @param  {Number}  wh       [vertical ? height : width]
      * @return {}
      */
-    normal: function(slide, prev, current, next, axis, offset, width, height) {
-      var wh = axis == 'X' ? width : height
+    normal: function(slide, prev, current, next, axis, offset, wh) {
       slide.style.transition = 'none'
       slide.style.zIndex = 0
-      prev.style.transform = 'translate' + axis + '(' + (offset - wh) + 'px)'
-      next.style.transform = 'translate' + axis + '(' + (offset + wh) + 'px)'
-      current.style.transform = 'translate' + axis + '(' + offset + 'px)'
+      _.setTransform(prev, axis, offset - wh)
+      _.setTransform(next, axis, offset + wh)
+      _.setTransform(current, axis, offset)
       current.style.zIndex = 2
     },
 
-    fade: function(slide, prev, current, next, axis, offset, width, height) {
-      var wh = axis == 'X' ? width : height
+    fade: function(slide, prev, current, next, axis, offset, wh) {
       var opacity = Math.abs(offset) / wh
       next = offset >= 0 ? prev : next
       slide.style.zIndex = 0
@@ -94,11 +98,12 @@
 
   function Slider(opt) {
     // options
-    this.opt = uilt.extend({
+    this.opt = _.extend({
       data: [],
       autoPlay: true,
       loop: true,
       duration: 3000,
+      touchRange: 14,
       transtionType: 'normal',
       indicatorPos: 'center',
       indicatorType: 'normal',
@@ -106,15 +111,19 @@
     }, opt)
 
     // container
-    this.el = uilt.query(this.opt.el)
+    this.el = _.query(this.opt.el)
 
     if (!this.el || this.el.nodeType != 1) {
       throw new TypeError('el should be a selector(String) or an Element!')
     }
 
+    this.axis = this.opt.vertical ? 'Y' : 'X'
+
     this.width = this.el.offsetWidth
 
     this.height = this.el.offsetHeight
+
+    this.wh = this.opt.vertical ? this.height : this.width
 
     // slide data
     this.data = this.opt.data
@@ -123,7 +132,6 @@
     this.slides = []
 
     // slide direction: X(default) | Y
-    this.axis = this.opt.vertical ? 'Y' : 'X'
 
     // transtion animation: normal(default) | fade
     this.transtionType = this.opt.transtionType
@@ -143,6 +151,8 @@
 
     // suspending time. unit: ms | 3000ms(default)
     this.duration = this.opt.duration
+
+    this.touchRange = this.opt.touchRange
 
     // init index of slides
     this.currentIndex = 0
@@ -206,14 +216,14 @@
        * @return {} 
        */
       function renderMain() {
-        var ul = document.createElement('ul')
+        var ul = _.createEl('ul')
         ul.classList.add(this.prefixCls + '_wrap')
         this.data.forEach((function(item, index) {
           // li
-          var li = document.createElement('li')
+          var li = _.createEl('li')
           li.classList.add(this.itemPrefixCls)
 
-          var img = document.createElement('img')
+          var img = _.createEl('img')
           img.classList.add(this.prefixCls + '_img')
           img.src = item
 
@@ -230,7 +240,7 @@
        */
       function renderIndicator() {
         // outer wrap 
-        var outer = document.createElement('div')
+        var outer = _.createEl('div')
         outer.classList.add(
           this.indicatorPrefixCls + '-outer',
           this.indicatorPrefixCls + '--' + this.indicatorPos,
@@ -239,12 +249,12 @@
         if (this.indicatorType == 'normal') {
           // ul
           var normalPrefixCls = this.normalPrefixCls = 'slider_dot'
-          var inner = document.createElement('ul')
+          var inner = _.createEl('ul')
           inner.classList.add(this.indicatorPrefixCls + '-inner')
 
           this.data.forEach((function(item, index) {
             // li
-            var li = document.createElement('li')
+            var li = _.createEl('li')
             li.classList.add(normalPrefixCls)
             if (index == this.currentIndex) {
               li.classList.add(normalPrefixCls + '--active')
@@ -258,11 +268,11 @@
           var inner
           var circleCurrent
           var circleTotal
-          inner= document.createElement('div')
+          inner = _.createEl('div')
           inner.classList.add(this.indicatorPrefixCls + '-inner')
-          circleCurrent = this.circleCurrent = document.createElement('span')
+          circleCurrent = this.circleCurrent = _.createEl('span')
           circleCurrent.classList.add('slider_circle-current')
-          circleTotal = this.circleTotal = document.createElement('span')
+          circleTotal = this.circleTotal = _.createEl('span')
           circleTotal.textContent = '/' + this.data.length
           inner.appendChild(circleCurrent)
           inner.appendChild(circleTotal)
@@ -277,10 +287,14 @@
      * @return {} 
      */
     bindEvent: function() {
-      this.el.addEventListener('touchstart', this.eventHandler.bind(this))
-      this.el.addEventListener('touchmove', this.eventHandler.bind(this))
-      this.el.addEventListener('touchend', this.eventHandler.bind(this))
-      this.el.addEventListener('touchcancel', this.eventHandler.bind(this))
+      [
+        'touchstart',
+        'touchmove',
+        'touchend',
+        'touchcancel'
+      ].forEach((function(event) {
+        this.el.addEventListener(event, this.eventHandler.bind(this))
+      }).bind(this))
     },
 
     /**
@@ -300,6 +314,9 @@
         case 'touchend':
         case 'touchcancel':
           this.endHandler(e)
+          break
+        case 'orientationchange':
+          this.resizeHandler(e)
           break
       }
     },
@@ -323,19 +340,21 @@
      * @return {}   
      */
     moveHandler: function(e) {
-      var offset = {}
       var nextIndex
-      var addend
-      offset.X = e.targetTouches[0].pageX - this.startX
-      offset.Y = e.targetTouches[0].pageY - this.startY
+      var offset = {}
+      var touche = e.targetTouches[0]
+      offset.X = touche.pageX - this.startX
+      offset.Y = touche.pageY - this.startY
       this.offset = offset
 
       // when loop config is false 
       // cancle transition when slide
       // index is the max or min.
-      addend = offset[this.axis] > 0 ? -1 : 1
+      var addend = offset[this.axis] > 0 ? -1 : 1
       nextIndex = this.getNextIndex(this.currentIndex + addend)
-      if ((isStart.call(this) || isEnd.call(this)) && !this.loop) return
+      if ((isStart.call(this) || isEnd.call(this)) && !this.loop) {
+        return
+      }
 
       this.transition(this.offset[this.axis])
 
@@ -355,14 +374,16 @@
      */
     endHandler: function(e) {
       var endTime = new Date().getTime()
-      var boundary = endTime - this.startTime > 300 ? (this.opt.vertical ? this.height : this.width) / 2 : 14
-      if (this.offset[this.axis] >= boundary) {
-        this.slideTo(this.currentIndex - 1)
-      } else if (this.offset[this.axis] < -boundary) {
-        this.slideTo(this.currentIndex + 1)
-      } else {
-        this.slideTo(this.currentIndex)
-      }
+      var boundary = endTime - this.startTime > 300 ? this.wh / 2 : this.touchRange
+      var distance = this.offset[this.axis]
+      var next = distance >= boundary ? -1 : distance < -boundary ? 1 : 0
+      this.slideTo(this.currentIndex + next)
+    },
+
+    resizeHandler: function(e) {
+      this.width = this.el.offsetWidth
+      this.height = this.el.offsetHeight
+      this.setSlidesPosition()
     },
 
     /**
@@ -390,7 +411,15 @@
       var prevIndex = this.getNextIndex(this.currentIndex - 1)
       var nextIndex = this.getNextIndex(this.currentIndex + 1)
       this.slides.forEach((function(slide, index) {
-        this.transtionFn(slide, this.slides[prevIndex], this.slides[this.currentIndex], this.slides[nextIndex], this.axis, offset, this.width, this.height)
+        this.transtionFn(
+          slide,
+          this.slides[prevIndex],
+          this.slides[this.currentIndex],
+          this.slides[nextIndex],
+          this.axis,
+          offset,
+          this.wh
+        )
       }).bind(this))
     },
 
@@ -421,9 +450,9 @@
         if (index === this.currentIndex) {
           x = 0
         } else {
-          x = (index - this.currentIndex) * (this.opt.vertical ? this.height : this.width)
+          x = (index - this.currentIndex) * this.wh
         }
-        el.style.transform = 'translate' + this.axis + '(' + x + 'px)'
+        _.setTransform(el, this.axis, x)
       }).bind(this))
     },
 
@@ -455,7 +484,7 @@
      */
     autoPlayAction: function() {
       this.pause()
-      this.autoPlayTimer = setTimeout((function() {
+      this.autoPlayTimer = window.setTimeout((function() {
         this.slideTo(this.currentIndex + 1)
         this.autoPlayAction()
       }).bind(this), this.duration)
@@ -466,7 +495,7 @@
      * @return {}
      */
     pause: function() {
-      clearTimeout(this.autoPlayTimer)
+      window.clearTimeout(this.autoPlayTimer)
     }
   }
 
