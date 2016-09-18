@@ -176,7 +176,7 @@
     this.initSlide = this.opt.initSlide
 
     // init index of slides
-    this.currentIndex = 0
+    this.currentIndex = this.opt.initSlide || 0
 
     this.nextIndex = 0
 
@@ -214,7 +214,7 @@
 
       this.bindEvent()
 
-      this.setCurrentIndex()
+      this.currentIndex = this.getCorrectIndex(this.initSlide)
 
       // set transition style
       if (this.transtionType === 'normal') {
@@ -331,26 +331,6 @@
       }
     },
 
-    setCurrentIndex: function() {
-      var index = 0
-      var exit = false
-      var type = typeof this.initSlide
-      if (type == 'number') {
-        index = this.initSlide
-      } else if (type == 'string') {
-        this.data.forEach((function(slide, i) {
-          if (slide.name == this.initSlide) {
-            index = i
-            exit = true
-          }
-        }).bind(this))
-        if (!exit) {
-          console.error('can\'t find the slide with the name: "' + this.initSlide + '"')
-        }
-      }
-      this.currentIndex = index
-    },
-
     /**
      * bind touch envents
      * @return {} 
@@ -462,6 +442,9 @@
      * @return {}
      */
     slideTo: function(nextIndex) {
+      if (typeof nextIndex == 'string') {
+        nextIndex = this.getCorrectIndex(nextIndex)
+      }
       this.autoPlay && this.pause()
       this.nextIndex = this.getNextIndex(nextIndex)
       this.showDot && this.switchIndicator(this.nextIndex)
@@ -518,6 +501,26 @@
       return nextIndex
     },
 
+    getCorrectIndex: function(key) {
+      var index = 0
+      var exit = false
+      var type = typeof key
+      if (type == 'number') {
+        index = this.initSlide
+      } else if (type == 'string') {
+        this.data.forEach((function(slide, i) {
+          if (slide.name == key) {
+            index = i
+            exit = true
+          }
+        }).bind(this))
+        if (!exit) {
+          console.error('can\'t find the slide with the name: "' + this.initSlide + '"')
+        }
+      }
+      return index
+    },
+
     /**
      * set slides position when 
      * the tansition type is normal
@@ -569,7 +572,7 @@
     },
 
     /**
-     * stop auto paly when transition
+     * stop autoPaly
      * @return {}
      */
     pause: function() {
