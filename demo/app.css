@@ -27,6 +27,7 @@
   width: 100%;
   height: inherit;
   overflow: hidden;
+  background: #fff;
 }
 
 .slider_item--fade {

@@ -36,8 +36,6 @@
       return document.createElement(tag)
     },
 
-
-
     isPlainObject: function(obj) {
       if (typeof obj != 'object') return
       var exit = false
@@ -432,8 +430,12 @@
       var endTime = new Date().getTime()
       var boundary = endTime - this.startTime > 300 ? this.wh / 2 : this.touchRange
       var distance = this.offset[this.axis]
-      var next = distance >= boundary ? -1 : distance < -boundary ? 1 : 0
+      var next
+      next = distance >= boundary ? -1 : distance < -boundary ? 1 : 0
       this.slideTo(this.currentIndex + next)
+      if (!distance || Math.abs(distance) < this.touchRange) {
+        this.triggerLink(e && e.target)
+      }
     },
 
     resizeHandler: function(e) {
@@ -466,6 +468,21 @@
 
     slideNext: function() {
       this.slideTo(this.currentIndex + 1)
+    },
+
+    triggerLink: function(el) {
+      var tagName = el.tagName
+      if (tagName == 'A') {
+        if (el.getAttribute('target') == '_blank') {
+          window.open(el.href)
+        } else {
+          window.location.href = el.href
+        }
+      } else if (tagName == "LI" && el.classList.contains(this.itemPrefixCls) > -1) {
+        return
+      } else {
+        this.triggerLink(el.parentNode)
+      }
     },
 
     /**
@@ -554,7 +571,7 @@
       }
       if (this.enableGPU) {
         el.style.cssText += ';-webkit-transform: translate3d(' + x + 'px, ' + y + 'px, 0)'
-      }else {
+      } else {
         el.style.cssText += ';-webkit-transform: translate' + axis + '(' + value + 'px)'
       }
     },
