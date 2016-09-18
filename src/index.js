@@ -138,11 +138,7 @@
 
     this.axis = this.opt.vertical ? 'Y' : 'X'
 
-    this.width = this.el.offsetWidth
-
-    this.height = this.el.offsetHeight
-
-    this.wh = this.opt.vertical ? this.height : this.width
+    this.wh = this.opt.vertical ? this.el.offsetHeight : this.el.offsetWidth
 
     // slide data
     this.data = this.opt.data
@@ -345,10 +341,13 @@
         'touchmove',
         'touchend',
         'touchcancel',
-        'resize'
+        
       ].forEach((function(event) {
         this.el.addEventListener(event, this.eventHandler.bind(this))
       }).bind(this))
+
+      this.resize = 'onorientationchange' in window ? 'orientationchange' : 'resize'
+      window.addEventListener(this.resize, this.eventHandler.bind(this))
     },
 
     /**
@@ -369,6 +368,7 @@
         case 'touchcancel':
           this.endHandler(e)
           break
+        case 'resize':
         case 'orientationchange':
           this.resizeHandler(e)
           break
@@ -439,8 +439,7 @@
     },
 
     resizeHandler: function(e) {
-      this.width = this.el.offsetWidth
-      this.height = this.el.offsetHeight
+      this.wh = this.opt.vertical ? this.el.offsetHeight : this.el.offsetWidth
       this.setSlidesPosition()
     },
 
