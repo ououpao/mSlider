@@ -51,7 +51,7 @@
 
 /*indicator*/
 
-.slider_indicator-outer {
+.slider_indicator-outer, .slider_description {
   position: absolute;
   width: 100%;
   bottom: 0;
@@ -73,7 +73,7 @@
   display: inline-block;
   padding: 4px 5px;
   border-radius: 20px;
-  background: rgba(0, 0, 0, 0.36);
+  background-color: rgba(0, 0, 0, 0.36);
 }
 
 .slider_indicator--normal .slider_dot {
@@ -83,7 +83,7 @@
   height: 5px;
   background: #9c9b9b;
   border-radius: 5px;
-  margin: 0 5px;
+  margin: 0 2px;
   transition: all .3s;
 }
 
@@ -99,7 +99,7 @@
   text-align: center;
   line-height: 35px;
   color: #696969;
-  background-color: rgba(31, 30, 30, 0.72);
+  background-color: rgba(0, 0, 0, 0.36);
   border-radius: 35px;
 }
 .slider_indicator--circle .slider_circle-current {
@@ -107,3 +107,11 @@
   font-size: 18px;
 }
 
+/*description*/
+
+.slider_description{
+  color: #fff;
+  font-size: 14px;
+  text-align: left;
+  background-color: rgba(0, 0, 0, 0.36);
+}

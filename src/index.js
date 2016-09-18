@@ -234,7 +234,8 @@
         var slide = {
           type: '',
           name: '',
-          content: ''
+          content: '',
+          description: ''
         }
         if (typeof item == 'string') {
           slide.content = item
@@ -242,6 +243,7 @@
         } else if (_.isPlainObject(item)) {
           slide.content = item.content
           slide.name = item.name || index
+          slide.description = item.description
         }
         slide.type = nodeReg.test(slide.content) ? slideType.NODE : slideType.IMG
         array[index] = slide
@@ -270,12 +272,20 @@
           var li = _.createEl('li')
           var img = _.createEl('img')
           li.classList.add(this.itemPrefixCls)
+            // img
           if (slide.type == slideType.IMG) {
             img.classList.add(this.prefixCls + '_img')
             img.src = slide.content
             li.appendChild(img)
+              // node
           } else if (slide.type == slideType.NODE) {
             li.innerHTML = slide.content
+          }
+          if (slide.description) {
+            var description = _.createEl('div')
+            description.classList.add(this.prefixCls + '_description')
+            description.textContent = slide.description
+            li.appendChild(description)
           }
           ul.appendChild(li)
           this.slides.push(li)
@@ -341,7 +351,7 @@
         'touchmove',
         'touchend',
         'touchcancel',
-        
+
       ].forEach((function(event) {
         this.el.addEventListener(event, this.eventHandler.bind(this))
       }).bind(this))
@@ -470,6 +480,7 @@
     },
 
     triggerLink: function(el) {
+      console.log(el)
       var tagName = el.tagName
       if (tagName == 'A') {
         if (el.getAttribute('target') == '_blank') {

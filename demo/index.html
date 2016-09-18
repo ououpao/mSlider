@@ -16,17 +16,17 @@
   <script>
   var slider = new eSlider({
     el: '#slider',
-    data: [
-      './img/slider1.png',
+    data: [{
+        content: './img/slider1.png',
+        description: '哈哈哈'
+      },
       './img/slider2.png',
       './img/slider3.png',
       './img/slider4.png',
-      './img/slider5.png',
-      '<div><h1>slider6</h1></div>',
-      '<div><a href="/test" target="_blank" rel="noreferrer">slider8</a></div>',
-      {
+      './img/slider5.png', {
         name: 'slider7',
-        content: '<div><h1>slider7</h1></div>'
+        content: '<img src="./img/slider4.png" alt="" />',
+        description: '哈哈哈'
       }
     ],
     autoPlay: false,
@@ -35,7 +35,7 @@
     transtionType: 'normal',
     duration: 1000,
     showIndicator: true,
-    indicatorPos: 'center',
+    indicatorPos: 'right',
     indicatorType: 'normal',
     touchRange: 10,
     initSlide: 0
