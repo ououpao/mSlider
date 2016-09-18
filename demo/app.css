@@ -27,9 +27,6 @@
   width: 100%;
   height: inherit;
   overflow: hidden;
-  /*opacity: 0;*/
-  /*transition: transform .3s ease;*/
-  /*z-index: 9;*/
 }
 
 .slider_item--fade {
@@ -52,8 +49,6 @@
 
 
 /*indicator*/
-
-
 
 .slider_indicator-outer {
   position: absolute;

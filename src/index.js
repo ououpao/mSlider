@@ -36,9 +36,7 @@
       return document.createElement(tag)
     },
 
-    setCSSTransform: function(el, axis, value) {
-      el.style.transform = 'translate' + axis + '(' + value + 'px)'
-    },
+
 
     isPlainObject: function(obj) {
       if (typeof obj != 'object') return
@@ -88,10 +86,10 @@
       slide.style.transition = 'none'
       slide.style.zIndex = 0
       prev.style.zIndex = 1
-      _.setCSSTransform(prev, axis, offset - wh)
+      this.setCSSTranslate(prev, axis, offset - wh)
       next.style.zIndex = 1
-      _.setCSSTransform(next, axis, offset + wh)
-      _.setCSSTransform(current, axis, offset)
+      this.setCSSTranslate(next, axis, offset + wh)
+      this.setCSSTranslate(current, axis, offset)
       current.style.zIndex = 2
     },
 
@@ -124,9 +122,13 @@
       duration: 3000,
       touchRange: 14,
       transtionType: 'normal',
+      transtionTimeFn: 'ease-out',
+      transtionTime: 300,
+      showIndicator: true,
       indicatorPos: 'center',
       indicatorType: 'normal',
       vertical: false,
+      enableGPU: true
     }, opt)
 
     // container
@@ -157,8 +159,10 @@
 
     this.transtionFn = transtionFns[this.transtionType]
 
+    this.transtionTimeFn = this.opt.transtionTimeFn
+
     // unit: ms
-    this.transtionTime = 300
+    this.transtionTime = this.opt.transtionTime
 
     // auto play: true(defualt)
     this.autoPlay = this.opt.autoPlay
@@ -181,7 +185,7 @@
     this.nextIndex = 0
 
     // show the indicator. true(default)
-    this.showDot = true
+    this.showIndicator = this.opt.showIndicator
 
     this.dots = []
 
@@ -189,6 +193,8 @@
     this.indicatorPos = this.opt.indicatorPos
 
     this.indicatorType = this.opt.indicatorType
+
+    this.enableGPU = this.opt.enableGPU
 
     // touch distance
     this.offset = {}
@@ -256,7 +262,7 @@
 
       renderMain.call(this)
 
-      this.showDot && renderIndicator.call(this)
+      this.showIndicator && renderIndicator.call(this)
 
       /**
        * render all slides
@@ -284,7 +290,7 @@
       }
 
       /**
-       * render the indicator when showDot is true
+       * render the indicator when showIndicator is true
        * @return {} 
        */
       function renderIndicator() {
@@ -447,7 +453,7 @@
       }
       this.autoPlay && this.pause()
       this.nextIndex = this.getNextIndex(nextIndex)
-      this.showDot && this.switchIndicator(this.nextIndex)
+      this.showIndicator && this.switchIndicator(this.nextIndex)
       this.currentIndex = this.nextIndex
       this.transition(0)
       this.autoPlay && this.autoPlayAction()
@@ -472,7 +478,8 @@
       var prevIndex = this.getNextIndex(this.currentIndex - 1)
       var nextIndex = this.getNextIndex(this.currentIndex + 1)
       this.slides.forEach((function(slide, index) {
-        this.transtionFn(
+        this.transtionFn.call(
+          this,
           slide,
           this.slides[prevIndex],
           this.slides[this.currentIndex],
@@ -533,8 +540,23 @@
         } else {
           x = (index - this.currentIndex) * this.wh
         }
-        _.setCSSTransform(el, this.axis, x)
+        this.setCSSTranslate(el, this.axis, x)
       }).bind(this))
+    },
+
+    setCSSTranslate: function(el, axis, value) {
+      var x = 0,
+        y = 0
+      if (axis == 'X') {
+        x = value
+      } else {
+        y = value
+      }
+      if (this.enableGPU) {
+        el.style.cssText += ';-webkit-transform: translate3d(' + x + 'px, ' + y + 'px, 0)'
+      }else {
+        el.style.cssText += ';-webkit-transform: translate' + axis + '(' + value + 'px)'
+      }
     },
 
     /**
@@ -542,7 +564,7 @@
      */
     setTransitionStyle: function() {
       this.slides.forEach((function(el, index) {
-        el.style.transition = 'all ' + this.transtionTime + 'ms ease'
+        el.style.transition = 'all ' + this.transtionTime + 'ms ' + this.transtionTimeFn
       }).bind(this))
     },
 
