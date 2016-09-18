@@ -1,55 +1,91 @@
 ## eSlider
-simple & classicle slider for web apps. providers 2 transitions, fade and translateX.  
-:point_right: [DEMO](https://kraaas.github.io/eSlider/)  
+Simple & classicle slider for web apps. providers 2 transitions, fade and translateX.  
+
+![](https://img.shields.io/npm/v/eSlider.svg)  ![](https://img.shields.io/npm/dm/eSlider.svg)  ![](https://img.shields.io/packagist/l/doctrine/orm.svg)  
+
+```javascript
+var slider = new eSlider({
+    el: '#slider',
+    data: [
+      './img/slider1.png',
+      '<img src="./img/slider5.png">',
+      {
+        name: 'first',
+        content: '<img src="./img/slider5.png">'
+      }
+    ],
+    autoPlay: false,
+    loop: false,
+    vertical: false,
+    transtionType: 'normal',
+    duration: 2000,
+    indicatorPos: 'right',
+    indicatorType: 'circle',
+    touchRange: 10,
+    initSlide: 2
+})
+
+```
+
+PC:  :point_right: [DEMO](https://kraaas.github.io/eSlider/) 
+Mobile:  
 ![](https://raw.githubusercontent.com/kraaas/eSlider/master/demo/img/qrcode.png)
 
-## 安装
+## Table of Contents
 
-###### github clone
+* [Install](#install)
+* [Useage](#useage)
+* [API](#api)
+* [License](#license)
+
+## <span name="install">Install</span>
+
+git clone
 
 ```bash
 git clone https://github.com/kraaas/eSlider.git
 ```
 
-###### npm
+npm
 
 ```bash
 npm install eSlider --save
 ```
 
-## 使用
+## <span name="useage">Useage</span>
 
-###### 创建一个空的容器
+create an empty container
     
 ```html
-<div id="e-slider"></div>
+<div id="slider"></div>
 ```
 
-###### 数据
-
-```javascript
-var data = [
-    './img/img1.png',
-    './img/img2.png',
-    './img/img3.png'
-]
-```
-
-###### 引入`eSlider`
+inset `eSlider.min.js` & `eSlider.min.css` 
 
 ```html
+<script src="eSlider.min.css"></script>
 <script src="eSlider.min.js"></script>
 ```
 
-###### 可以愉快的使用了
+fill data and options
 
 ```javascript
-var eSlider = ESlider({
-    el: '#e-slider',
-    data: data
+var slider = new eSlider({
+    el: '#slider',
+    data: [
+        './img/img1.png',
+        './img/img2.png',
+        './img/img3.png'
+    ],
+    autoPlay: false,
+    loop: false,
+    ...
 })
 ```
 
-## API
+## <span name="api">API</span>
 
 `updating...`
+
+## <span name="license">License</span>
+[MIT](http://opensource.org/licenses/MIT)
