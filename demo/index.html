@@ -11,7 +11,6 @@
 <body>
   <div id="slider" class="slider">
   </div>
-  <a href="/test" target="_blank">click</a>
   <script src="../src/index.js"></script>
   <script>
   var slider = new eSlider({
@@ -23,6 +22,7 @@
       './img/slider2.png',
       './img/slider3.png',
       './img/slider4.png',
+      '<a href="/test">slider</a>',
       './img/slider5.png', {
         name: 'slider7',
         content: '<img src="./img/slider4.png" alt="" />',
@@ -36,7 +36,7 @@
     duration: 1000,
     showIndicator: true,
     indicatorPos: 'right',
-    indicatorType: 'normal',
+    indicatorType: 'circle',
     touchRange: 10,
     initSlide: 0
   })

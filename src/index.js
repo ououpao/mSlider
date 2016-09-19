@@ -36,16 +36,8 @@
       return document.createElement(tag)
     },
 
-    isPlainObject: function(obj) {
-      if (typeof obj != 'object') return
-      var exit = false
-      var key
-      for (key in obj) {
-        if (obj.hasOwnProperty(key)) {
-          exit = true
-        }
-      }
-      return exit
+    isObject: function(obj) {
+      return Object.prototype.toString.call(obj) === '[object Object]'
     },
 
     extend: (function() {
@@ -193,6 +185,8 @@
     // touch distance
     this.offset = {}
 
+    this.indexCache = {}
+
     this.prefixCls = 'slider'
 
     this.itemPrefixCls = 'slider_item'
@@ -200,6 +194,7 @@
     this.indicatorPrefixCls = 'slider_indicator'
 
     this.init()
+
   }
 
   Slider.prototype = {
@@ -208,7 +203,7 @@
 
     init: function() {
 
-      this.makeSlide()
+      this.initData()
 
       this.render()
 
@@ -228,7 +223,7 @@
       this.autoPlay && this.autoPlayAction()
     },
 
-    makeSlide: function() {
+    initData: function() {
       var nodeReg = /^<.*/
       this.data.forEach(function(item, index, array) {
         var slide = {
@@ -240,7 +235,7 @@
         if (typeof item == 'string') {
           slide.content = item
           slide.name = index
-        } else if (_.isPlainObject(item)) {
+        } else if (_.isObject(item)) {
           slide.content = item.content
           slide.name = item.name || index
           slide.description = item.description
@@ -298,19 +293,18 @@
        * @return {} 
        */
       function renderIndicator() {
-        // outer wrap 
-        var outer = _.createEl('div')
-        outer.classList.add(
-          this.indicatorPrefixCls + '-outer',
+        var isNormal = this.indicatorType == 'normal'
+
+        // wrap
+        var wrap = this.indicatorWrap = _.createEl(isNormal ? 'ul' : 'div')
+        wrap.classList.add(
+          this.indicatorPrefixCls,
           this.indicatorPrefixCls + '--' + this.indicatorPos,
           this.indicatorPrefixCls + '--' + this.indicatorType
         )
-        if (this.indicatorType == 'normal') {
+        if (isNormal) {
           // ul
           var normalPrefixCls = this.normalPrefixCls = 'slider_dot'
-          var inner = _.createEl('ul')
-          inner.classList.add(this.indicatorPrefixCls + '-inner')
-
           this.data.forEach((function(item, index) {
             // li
             var li = _.createEl('li')
@@ -319,25 +313,22 @@
               li.classList.add(normalPrefixCls + '--active')
             }
             // ul
-            inner.appendChild(li)
+            wrap.appendChild(li)
             this.dots.push(li)
           }).bind(this))
-          outer.appendChild(inner)
+          this.el.appendChild(wrap)
         } else {
-          var inner
-          var circleCurrent
-          var circleTotal
-          inner = _.createEl('div')
-          inner.classList.add(this.indicatorPrefixCls + '-inner')
-          circleCurrent = this.circleCurrent = _.createEl('span')
+          // current
+          var circleCurrent = this.circleCurrent = _.createEl('span')
           circleCurrent.classList.add('slider_circle-current')
-          circleTotal = this.circleTotal = _.createEl('span')
+            // total
+          var circleTotal = this.circleTotal = _.createEl('span')
           circleTotal.textContent = '/' + this.data.length
-          inner.appendChild(circleCurrent)
-          inner.appendChild(circleTotal)
-          outer.appendChild(inner)
+
+          wrap.appendChild(circleCurrent)
+          wrap.appendChild(circleTotal)
+          this.el.appendChild(wrap)
         }
-        this.el.appendChild(outer)
       }
     },
 
@@ -356,8 +347,10 @@
         this.el.addEventListener(event, this.eventHandler.bind(this))
       }).bind(this))
 
-      this.resize = 'onorientationchange' in window ? 'orientationchange' : 'resize'
-      window.addEventListener(this.resize, this.eventHandler.bind(this))
+      // resize
+      this.resizeEvent = 'onorientationchange' in window ? 'orientationchange' : 'resize'
+      window.addEventListener(this.resizeEvent, this.eventHandler.bind(this))
+
     },
 
     /**
@@ -378,8 +371,7 @@
         case 'touchcancel':
           this.endHandler(e)
           break
-        case 'resize':
-        case 'orientationchange':
+        case this.resizeEvent:
           this.resizeHandler(e)
           break
       }
@@ -490,6 +482,8 @@
         }
       } else if (tagName == "LI" && el.classList.contains(this.itemPrefixCls) > -1) {
         return
+      } else if (el.classList.contains(this.indicatorPrefixCls) > -1) {
+        return
       } else {
         this.triggerLink(el.parentNode)
       }
@@ -502,8 +496,19 @@
      */
     transition: function(offset) {
       var max = this.slides.length - 1
-      var prevIndex = this.getNextIndex(this.currentIndex - 1)
-      var nextIndex = this.getNextIndex(this.currentIndex + 1)
+      var cache = this.indexCache[this.currentIndex]
+      var prevIndex, nextIndex
+      if (cache) {
+        prevIndex = cache.prevIndex
+        nextIndex = cache.nextIndex
+      } else {
+        prevIndex = this.getNextIndex(this.currentIndex - 1)
+        nextIndex = this.getNextIndex(this.currentIndex + 1)
+        this.indexCache[this.currentIndex] = {
+          prevIndex: prevIndex,
+          nextIndex: nextIndex
+        }
+      }
       this.slides.forEach((function(slide, index) {
         this.transtionFn.call(
           this,

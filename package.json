@@ -4,6 +4,7 @@
   "description": "simple slider for mobile apps",
   "main": "dist/eSlide.min.js",
   "scripts": {
+    "dev": "serve -p 8085",
     "build": "gulp build",
     "test": "karma start"
   },
@@ -23,6 +24,7 @@
     "url": "git+https://github.com/kraaas/eSlider.git"
   },
   "keywords": [
+    "carousel",
     "slider",
     "mobile",
     "webapp",
