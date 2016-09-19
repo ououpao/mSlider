@@ -276,11 +276,18 @@
           } else if (slide.type == slideType.NODE) {
             li.innerHTML = slide.content
           }
+          // description
           if (slide.description) {
             var description = _.createEl('div')
             description.classList.add(this.prefixCls + '_description')
             description.textContent = slide.description
-            li.appendChild(description)
+
+            if (slide.type == slideType.NODE) {
+              li.firstChild.appendChild(description)
+            } else {
+              li.appendChild(description)
+            }
+            
           }
           ul.appendChild(li)
           this.slides.push(li)
@@ -480,9 +487,9 @@
         } else {
           window.location.href = el.href
         }
-      } else if (tagName == "LI" && el.classList.contains(this.itemPrefixCls) > -1) {
+      } else if (tagName == "LI" && el.classList.contains(this.itemPrefixCls)) {
         return
-      } else if (el.classList.contains(this.indicatorPrefixCls) > -1) {
+      } else if (el.classList.contains(this.indicatorPrefixCls)) {
         return
       } else {
         this.triggerLink(el.parentNode)
