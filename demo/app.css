@@ -1,17 +1,9 @@
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-.slider {
+.mslider {
   position: relative;
-  width: auto;
-  height: 200px;
   background: #dedede;
 }
 
-.slider_wrap {
+.mslider_slides {
   position: relative;
   list-style: none;
   width: 100%;
@@ -19,10 +11,7 @@
   overflow: hidden;
 }
 
-
-/*item*/
-
-.slider_item {
+.mslider_item {
   position: absolute;
   top: 0;
   left: 0;
@@ -32,28 +21,15 @@
   background: #fff;
 }
 
-.slider_item--fade {
-  opacity: 0;
+.mslider_img {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%);
+  /*max-width: 100%;*/
+  max-height: 100%;
 }
 
-.slider_item > a {
-  display: block;
-}
-
-.slider_item--active {
-  opacity: 1;
-  z-index: 10;
-}
-
-.slider_img {
-  width: 100%;
-  height: 200px;
-}
-
-
-/*indicator*/
-
-.slider_indicator {
+.mslider_indicator {
   position: absolute;
   z-index: 10;
   bottom: 10px;
@@ -62,25 +38,25 @@
 }
 
 
-.slider_indicator--left {
+.mslider_indicator--left {
   left: 10px;
 }
-.slider_indicator--center {
+.mslider_indicator--center {
   left: 50%;
   transform: translateX(-50%);
 }
-.slider_indicator--right {
+.mslider_indicator--right {
   right: 10px;
 }
 
-.slider_indicator--normal {
+.mslider_indicator--normal {
   display: inline-block;
   padding: 4px 5px;
   border-radius: 20px;
   background-color: rgba(0, 0, 0, 0.36);
 }
 
-.slider_indicator--normal .slider_dot {
+.mslider_indicator--normal .mslider_dot {
   display: inline-block;
   font-size: 14px;
   width: 5px;
@@ -91,11 +67,11 @@
   transition: all .3s;
 }
 
-.slider_indicator--normal .slider_dot--active {
+.mslider_indicator--normal .mslider_dot--active {
   background: #ff8100;
 }
 
-.slider_indicator--circle {
+.mslider_indicator--circle {
   display: inline-block;
   width: 35px;
   height: 35px;
@@ -107,15 +83,12 @@
   border-radius: 35px;
 }
 
-.slider_indicator--circle .slider_circle-current {
+.mslider_indicator--circle .mslider_circle-current {
   color: #8C8A8A;
   font-size: 18px;
 }
 
-
-/*description*/
-
-.slider_description {
+.mslider_description {
   position: absolute;
   width: 100%;
   bottom: 0;

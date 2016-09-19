@@ -1,5 +1,5 @@
 {
-  "name": "eSlider",
+  "name": "mSlider",
   "version": "0.0.1",
   "description": "simple slider for mobile apps",
   "main": "dist/eSlide.min.js",
@@ -21,7 +21,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kraaas/eSlider.git"
+    "url": "git+https://github.com/kraaas/mSlider.git"
   },
   "keywords": [
     "carousel",
@@ -33,8 +33,8 @@
   ],
   "author": "kraaas",
   "bugs": {
-    "url": "https://github.com/kraaas/eSlider/issues"
+    "url": "https://github.com/kraaas/mSlider/issues"
   },
-  "homepage": "https://github.com/kraaas/eSlider#readme",
+  "homepage": "https://github.com/kraaas/mSlider#readme",
   "license": "MIT"
 }

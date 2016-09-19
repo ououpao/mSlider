@@ -4,31 +4,37 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
-  <title>slide</title>
+  <title>mSlide</title>
+  <style>
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  </style>
   <link rel="stylesheet" href="./app.css">
 </head>
 
 <body>
-  <div id="slider" class="slider">
+  <div class="slider-wrap"></div>
   </div>
   <script src="../src/index.js"></script>
   <script>
-  var slider = new eSlider({
-    el: '#slider',
+  var slider = new mSlider({
+    el: '.slider-wrap',
     data: [{
-        name: 'slider7',
-        content: '<a rel="external" href="/test"><img src="./img/slider4.png" alt="" /></a>',
-        description: '哈哈哈'
-      }, {
+        name: 'slider1',
         content: './img/slider1.png',
-        description: '哈哈哈'
+        description: 'slider1'
+      }, {
+        content: './img/slider2.png',
+        description: 'slider2'
       },
-      './img/slider2.png',
       './img/slider3.png',
       './img/slider4.png',
-      '<a href="/test">slider</a>',
-      './img/slider5.png',
+      './img/slider5.png'
     ],
+    replace: true,
     autoPlay: false,
     loop: true,
     vertical: false,
@@ -36,9 +42,10 @@
     duration: 1000,
     showIndicator: true,
     indicatorPos: 'right',
-    indicatorType: 'circle',
+    indicatorType: 'normal',
     touchRange: 10,
-    initSlide: 0
+    initSlide: 0,
+    height: '200px'
   })
   </script>
 </body>
