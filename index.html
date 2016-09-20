@@ -5,23 +5,38 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
   <title>slide</title>
-  <link rel="stylesheet" href="./app.css">
+  <link rel="stylesheet" href="https://cdn.rawgit.com/kraaas/eSlider/master/demo/app.css">
+  <style>
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+  }
+  ul {
+    margin:0;
+  }
+  </style>
 </head>
 
 <body>
   <div id="slider" class="slider">
   </div>
-  <script src="https://cdn.rawgit.com/kraaas/eSlider/master/dist/eSlider.min.js"></script>
+  <script src="https://cdn.rawgit.com/kraaas/eSlider/master/src/index.js"></script>
   <script>
-  var eSlider = Slider({
+  var imgHost = 'https://raw.githubusercontent.com/kraaas/mSlider/master/demo/img/'
+  var slider = new mSlider({
     el: '#slider',
     data: [
-      './img/slider1.png',
-      './img/slider2.png',
-      './img/slider3.png',
-      './img/slider4.png',
-      './img/slider5.png'
-    ]
+      imgHost + 'slider1.png',
+      imgHost + 'slider2.png',
+      imgHost + 'slider3.png',
+      imgHost + 'slider4.png',
+      imgHost + 'slider5.png'
+    ],
+    autoPlay: false,
+    height: '200px',
+    width: '100%',
+    replace: true
   })
   </script>
 </body>
