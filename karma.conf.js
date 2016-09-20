@@ -20,7 +20,7 @@ module.exports = function(config) {
     files: [
       'demo/app.css',
       'src/index.js',
-      'test/slider.spec.js'
+      'test/mSlider.spec.js'
     ],
 
 

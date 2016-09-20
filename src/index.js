@@ -74,10 +74,10 @@
      */
     normal: function(slide, prev, current, next, axis, offset, wh) {
       slide.style.transition = 'none'
-      slide.style.zIndex = 0
+      slide.style.zIndex = -1
       prev.style.zIndex = 1
       this._setCSSTranslate(prev, axis, offset - wh)
-      next.style.zIndex = 1
+      next.style.zIndex = 0
       this._setCSSTranslate(next, axis, offset + wh)
       this._setCSSTranslate(current, axis, offset)
       current.style.zIndex = 2
@@ -86,7 +86,7 @@
     fade: function(slide, prev, current, next, axis, offset, wh) {
       var opacity = Math.abs(offset) / wh
       next = offset >= 0 ? prev : next
-      slide.style.zIndex = 0
+      slide.style.zIndex = -1
       slide.style.opacity = 0
       next.style.zIndex = 1
       next.style.opacity = opacity
@@ -124,6 +124,8 @@
       enableGPU: true,
       replace: false
     }, opt)
+
+    this.opt = opt
 
     // mSlider container
     // a selector or an Element
@@ -603,14 +605,17 @@
       this._transition(0)
       this.autoPlay && this._autoPlayAction()
       this._setCSSTransition()
+      return this
     },
 
     slidePrev: function() {
       this.slideTo(this.currentIndex - 1)
+      return this
     },
 
     slideNext: function() {
       this.slideTo(this.currentIndex + 1)
+      return this
     },
 
     /**
@@ -619,6 +624,7 @@
      */
     pause: function() {
       window.clearTimeout(this.autoPlayTimer)
+      return this
     },
 
     destroy: function() {
@@ -632,6 +638,8 @@
 
       // empty container
       this.wrap.innerHTML = ''
+
+      return this
     }
   }
 
