@@ -37,14 +37,15 @@
   display: inline-block;
 }
 
-
 .mslider_indicator--left {
   left: 10px;
 }
+
 .mslider_indicator--center {
   left: 50%;
   transform: translateX(-50%);
 }
+
 .mslider_indicator--right {
   right: 10px;
 }
