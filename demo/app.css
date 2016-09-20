@@ -62,14 +62,14 @@
   font-size: 14px;
   width: 5px;
   height: 5px;
-  background: #9c9b9b;
+  background-color: rgba(255, 247, 133, 0.3);
   border-radius: 5px;
   margin: 0 2px;
   transition: all .3s;
 }
 
 .mslider_indicator--normal .mslider_dot--active {
-  background: #ff8100;
+  background-color: #fff;
 }
 
 .mslider_indicator--circle {
