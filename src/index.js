@@ -7,7 +7,7 @@
  */
 'use strict';
 
-(function(window, factory) {
+(function(factory) {
   var mSlider = factory()
   mSlider.VERSION = '0.0.1'
     /**
@@ -23,7 +23,7 @@
     window['mSlider'] = mSlider
   }
 
-})(window, function() {
+})(function() {
   var utils = {
     query: function(el) {
       if (el && el.nodetype !== 1) {
@@ -177,13 +177,19 @@
 
       this._bindEvent()
 
-      this.currentIndex = this._getCorrectIndex(this.initSlide)
+      this._currentIndex = this._getCorrectIndex(this.initSlide)
+
+      // if data is empty, 
+      // stop continue init
+      if(!this.data.length) {
+        return
+      }
 
       this._initSlideStyle()
 
       this._setCSSTransition()
 
-      this.slideTo(this.currentIndex)
+      this.slideTo(this._currentIndex)
 
       this.autoPlay && this._autoPlayAction()
     },
@@ -290,7 +296,7 @@
             // li
             var li = utils.createEl('li')
             li.classList.add(normalPrefixCls)
-            if (index == this.currentIndex) {
+            if (index == this._currentIndex) {
               li.classList.add(normalPrefixCls + '--active')
             }
             // ul
@@ -390,7 +396,7 @@
       // cancle transition when slide
       // index is the max or min.
       var addend = offset[this._axis] > 0 ? -1 : 1
-      nextIndex = this._getNextIndex(this.currentIndex + addend)
+      nextIndex = this._getNextIndex(this._currentIndex + addend)
       if ((isStart.call(this) || isEnd.call(this)) && !this.loop) {
         return
       }
@@ -398,11 +404,11 @@
       this._transition(this._offset[this._axis])
 
       function isStart() {
-        return this.currentIndex == 0 && nextIndex == 0
+        return this._currentIndex == 0 && nextIndex == 0
       }
 
       function isEnd() {
-        return this.currentIndex == nextIndex
+        return this._currentIndex == nextIndex
       }
     },
 
@@ -417,7 +423,7 @@
       var distance = this._offset[this._axis]
       var next
       next = distance >= boundary ? -1 : distance < -boundary ? 1 : 0
-      this.slideTo(this.currentIndex + next)
+      this.slideTo(this._currentIndex + next)
       if (!distance || Math.abs(distance) < this.touchRange) {
         this._triggerLink(e && e.target)
       }
@@ -429,7 +435,6 @@
     },
 
     _triggerLink: function(el) {
-      console.log(el)
       var tagName = el.tagName
       if (tagName == 'A') {
         if (el.getAttribute('target') == '_blank') {
@@ -453,15 +458,15 @@
      */
     _transition: function(offset) {
       var max = this._slides.length - 1
-      var cache = this._indexCache[this.currentIndex]
+      var cache = this._indexCache[this._currentIndex]
       var prevIndex, nextIndex
       if (cache) {
         prevIndex = cache.prevIndex
         nextIndex = cache.nextIndex
       } else {
-        prevIndex = this._getNextIndex(this.currentIndex - 1)
-        nextIndex = this._getNextIndex(this.currentIndex + 1)
-        this._indexCache[this.currentIndex] = {
+        prevIndex = this._getNextIndex(this._currentIndex - 1)
+        nextIndex = this._getNextIndex(this._currentIndex + 1)
+        this._indexCache[this._currentIndex] = {
           prevIndex: prevIndex,
           nextIndex: nextIndex
         }
@@ -471,7 +476,7 @@
           this,
           slide,
           this._slides[prevIndex],
-          this._slides[this.currentIndex],
+          this._slides[this._currentIndex],
           this._slides[nextIndex],
           this._axis,
           offset,
@@ -526,10 +531,10 @@
       this._setWh()
       if (this.transtionType == 'normal') {
         this._slides.forEach((function(el, index) {
-          if (index === this.currentIndex) {
+          if (index === this._currentIndex) {
             value = 0
           } else {
-            value = (index - this.currentIndex) * this.wh
+            value = (index - this._currentIndex) * this.wh
           }
           this._setCSSTranslate(el, this._axis, value)
         }).bind(this))
@@ -570,7 +575,7 @@
      */
     _switchIndicator: function(nextIndex) {
       if (this.indicatorType == 'normal') {
-        this.dots[this.currentIndex].classList.remove(this.normalPrefixCls + '--active')
+        this.dots[this._currentIndex].classList.remove(this.normalPrefixCls + '--active')
         this.dots[this._nextIndex].classList.add(this.normalPrefixCls + '--active')
       } else {
         this.circleCurrent.textContent = nextIndex + 1
@@ -584,7 +589,7 @@
     _autoPlayAction: function() {
       this.pause()
       this.autoPlayTimer = window.setTimeout((function() {
-        this.slideTo(this.currentIndex + 1)
+        this.slideTo(this._currentIndex + 1)
         this._autoPlayAction()
       }).bind(this), this.duration)
     },
@@ -601,7 +606,7 @@
       this.autoPlay && this.pause()
       this._nextIndex = this._getNextIndex(nextIndex)
       this.showIndicator && this._switchIndicator(this._nextIndex)
-      this.currentIndex = this._nextIndex
+      this._currentIndex = this._nextIndex
       this._transition(0)
       this.autoPlay && this._autoPlayAction()
       this._setCSSTransition()
@@ -609,12 +614,12 @@
     },
 
     slidePrev: function() {
-      this.slideTo(this.currentIndex - 1)
+      this.slideTo(this._currentIndex - 1)
       return this
     },
 
     slideNext: function() {
-      this.slideTo(this.currentIndex + 1)
+      this.slideTo(this._currentIndex + 1)
       return this
     },
 
