@@ -1,5 +1,5 @@
 ## mSlider
-Simple & classicle slider for web apps. providers 2 transitions, fade and translateX.  
+简单实用的手机端slider.  
 
 ![](https://img.shields.io/npm/v/eSlider.svg)  ![](https://img.shields.io/npm/dm/eSlider.svg)  ![](https://img.shields.io/packagist/l/doctrine/orm.svg)  
 
@@ -8,21 +8,25 @@ var slider = new mSlider({
     el: '#slider',
     data: [
       './img/slider1.png',
-      '<img src="./img/slider5.png">',
-      {
+      '<div>slider2</div>',{
         name: 'first',
-        content: '<img src="./img/slider5.png">'
+        content: '<div>slider3</div>'
       }
     ],
-    autoPlay: false,
-    loop: false,
-    vertical: false,
+    initSlide: 0,
+    autoPlay: true,
+    loop: true,
+    duration: 3000,
+    touchRange: 14,
     transtionType: 'normal',
-    duration: 2000,
-    indicatorPos: 'right',
-    indicatorType: 'circle',
-    touchRange: 10,
-    initSlide: 2
+    transtionTimeFn: 'ease-out',
+    transtionTime: 300,
+    showIndicator: true,
+    indicatorPos: 'center',
+    indicatorType: 'normal',
+    vertical: false,
+    enableGPU: true,
+    replace: false
 })
 
 ```
@@ -33,18 +37,12 @@ Mobile:
 
 ## Table of Contents
 
-* [Install](#install)
-* [Useage](#useage)
+* [安装](#install)
+* [使用](#useage)
 * [API](#api)
 * [License](#license)
 
-## <span name="install">Install</span>
-
-git clone
-
-```bash
-git clone https://github.com/kraaas/mSlider.git
-```
+## <span name="install">安装</span>
 
 npm
 
@@ -52,31 +50,42 @@ npm
 npm install mSlider --save
 ```
 
-## <span name="useage">Useage</span>
+git clone
 
-create an empty container
+```bash
+git clone https://github.com/kraaas/mSlider.git
+```
+
+## <span name="useage">使用</span>
+
+1.创建一个空节点
     
 ```html
 <div id="slider"></div>
 ```
 
-inset `mSlider.min.js` & `mSlider.min.css` 
+2.引入 `mSlider.min.css`  和 `mSlider.min.js` 
 
 ```html
 <script src="mSlider.min.css"></script>
 <script src="mSlider.min.js"></script>
 ```
 
-fill data and options
+3.定义你的展示数据
 
+```javascript
+var data = [
+    './img/img1.png',
+    './img/img2.png',
+    './img/img3.png'
+]
+```
+
+4.创建 `mSlider` 实例
 ```javascript
 var slider = new mSlider({
     el: '#slider',
-    data: [
-        './img/img1.png',
-        './img/img2.png',
-        './img/img3.png'
-    ],
+    data: data,
     autoPlay: false,
     loop: false,
     ...
@@ -85,7 +94,26 @@ var slider = new mSlider({
 
 ## <span name="api">API</span>
 
-`updating...`
+1.配置项  
+
+|配置项|说明|类型|默认值|
+|------|----|----|------|
+|el|slider容器|String/Element||
+|data|用于slider展示的数据| Arrya| [ ]|
+|initSlide|初始化后选中的slide索引|Number/String|0|
+|autoPlay|是否自动播放|Boolean|true|
+|loop|是否循环播放|Boolean|true|
+|duration|播放的时间间隔(ms)|Number|3000|
+|touchRange|有效触摸范围(px)|Number|10|
+|transtionType|过渡效果类型|String|normal|
+|transtionTimeFn|过渡效果函数|String|easy-out|
+|transtionTime|过渡效果完成时间(ms)|Number|300|
+|showIndicator|是否显示指示器|Boolean|true|
+|indicatorPos|指示器位置|String|center|
+|indicatorType|指示器类型|String|normal|
+|vertical|是否垂直滚动|Boolean|false|
+|enableGPU|是否启用3D加速|Boolean|true|
+|replace|是否覆盖容器|Boolean|flase|
 
 ## <span name="license">License</span>
 [MIT](http://opensource.org/licenses/MIT)
