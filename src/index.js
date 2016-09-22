@@ -641,8 +641,8 @@
       // destroy resize event
       window.removeEventListener(this.resizeEvent, this._eventHandler)
 
-      // empty container
-      this.wrap.innerHTML = ''
+      // remove slider
+      this.wrap.parentNode.removeChild(this.wrap)
 
       return this
     }
