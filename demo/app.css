@@ -6,7 +6,6 @@
 .mslider_slides {
   position: relative;
   list-style: none;
-  width: 100%;
   height: inherit;
   overflow: hidden;
 }
