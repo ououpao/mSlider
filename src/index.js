@@ -507,7 +507,7 @@
       var exit = false
       var type = typeof key
       if (type == 'number') {
-        index = this.initSlide
+        index = this.initSlide - 1
       } else if (type == 'string') {
         this.data.forEach((function(slide, i) {
           if (slide.name == key) {
