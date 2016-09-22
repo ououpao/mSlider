@@ -31,18 +31,18 @@ var slider = new mSlider({
 
 ```
 
-`PC预览`:  :point_right: [DEMO](https://kraaas.github.io/mSlider/) 
+`PC预览`:  :point_right: [DEMO](https://kraaas.github.io/mSlider/)   
 `手机扫码预览`:  
 ![](https://raw.githubusercontent.com/kraaas/mSlider/master/demo/img/qrcode.png)
 
 ## Table of Contents
 
-* [安装](#install)
-* [使用](#useage)
+* [Install](#install)
+* [Useage](#useage)
 * [API](#api)
 * [License](#license)
 
-## <span name="install">安装</span>
+## <span name="install">Install</span>
 
 npm
 
@@ -56,7 +56,7 @@ git clone
 git clone https://github.com/kraaas/mSlider.git
 ```
 
-## <span name="useage">使用</span>
+## <span name="useage">Useage</span>
 
 1.创建一个空节点
     
@@ -184,7 +184,7 @@ new mSlider({
         content: 'http://domain.img.com/slider1.jpg'
     },{
         name: 'slider2',
-        content: '<div>slider2</div>
+        content: '<div>slider2</div>'
     }]
 })
 ```
@@ -198,7 +198,7 @@ new mSlider({
         content: 'http://domain.img.com/slider1.jpg'
     },{
         name: 'slider2',
-        content: '<div>slider2</div>
+        content: '<div>slider2</div>'
     }],
     initSlide: 2 // 显示第二个slide
 })
@@ -209,7 +209,7 @@ new mSlider({
         content: 'http://domain.img.com/slider1.jpg'
     },{
         name: 'slider2',
-        content: '<div>slider2</div>
+        content: '<div>slider2</div>'
     }],
     initSlide: 'slider2' // 也是显示第二个slide
 })
