@@ -519,7 +519,7 @@
           console.error('can\'t find the slide with the name: "' + this.initSlide + '"')
         }
       }
-      return index
+      return index < 0 ? 0 : index
     },
 
     /**
