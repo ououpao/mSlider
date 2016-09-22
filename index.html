@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
   <title>slide</title>
-  <link rel="stylesheet" href="https://cdn.rawgit.com/kraaas/eSlider/master/demo/app.css">
+  <link rel="stylesheet" href="demo/app.css">
   <style>
   html,
   body {
@@ -21,17 +21,16 @@
 <body>
   <div id="slider" class="slider">
   </div>
-  <script src="https://cdn.rawgit.com/kraaas/eSlider/master/src/index.js"></script>
+  <script src="src/index.js"></script>
   <script>
-  var imgHost = 'https://raw.githubusercontent.com/kraaas/mSlider/master/demo/img/'
   var slider = new mSlider({
     el: '#slider',
     data: [
-      imgHost + 'slider1.png',
-      imgHost + 'slider2.png',
-      imgHost + 'slider3.png',
-      imgHost + 'slider4.png',
-      imgHost + 'slider5.png'
+      'demo/img/slider1.png',
+      'demo/img/slider2.png',
+      'demo/img/slider3.png',
+      'demo/img/slider4.png',
+      'demo/img/slider5.png'
     ],
     autoPlay: false,
     height: '200px',

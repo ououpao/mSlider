@@ -1,0 +1,43 @@
+{
+  "name": "mSlider",
+  "version": "0.0.1",
+  "description": "simple slider for mobile apps",
+  "main": "dist/eSlide.min.js",
+  "scripts": {
+    "dev": "serve -p 8085",
+    "build": "gulp build",
+    "test": "karma start"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^3.1.1",
+    "gulp-clean-css": "^2.0.12",
+    "gulp-rename": "^1.2.2",
+    "gulp-uglify": "^2.0.0",
+    "karma": "^1.3.0",
+    "karma-chai": "^0.1.0",
+    "karma-chrome-launcher": "^2.0.0",
+    "karma-coverage": "^1.1.1",
+    "karma-mocha": "^1.1.1",
+    "mocha": "^3.0.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kraaas/mSlider.git"
+  },
+  "keywords": [
+    "carousel",
+    "slider",
+    "mobile",
+    "webapp",
+    "hybrid",
+    "javascript"
+  ],
+  "author": "kraaas",
+  "bugs": {
+    "url": "https://github.com/kraaas/mSlider/issues"
+  },
+  "homepage": "https://github.com/kraaas/mSlider#readme",
+  "license": "MIT"
+}

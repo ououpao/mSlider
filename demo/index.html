@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+  <title>mSlide</title>
+  <style>
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  </style>
+  <link rel="stylesheet" href="./app.css">
+</head>
+
+<body>
+  <div class="slider-wrap"></div>
+  </div>
+  <script src="../src/index.js"></script>
+  <script>
+  var slider = new mSlider({
+    el: '.slider-wrap',
+    data: [{
+        name: 'slider1',
+        content: './img/slider1.png',
+        // description: 'slider1'
+      }, {
+        content: './img/slider2.png',
+        // description: 'slider2'
+      },
+      './img/slider3.png',
+      './img/slider4.png',
+      './img/slider5.png'
+    ],
+    replace: true,
+    autoPlay: true,
+    loop: true,
+    vertical: false,
+    transtionType: 'normal',
+    duration: 2000,
+    transtionTime: 300,
+    showIndicator: true,
+    indicatorPos: 'center',
+    indicatorType: 'normal',
+    touchRange: 10,
+    initSlide: 0,
+    height: '200px'
+  })
+  </script>
+</body>
+
+</html>
