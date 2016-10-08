@@ -2,8 +2,72 @@ html,
 body {
   margin: 0;
   padding: 0;
+  height: 100%;
+  font-family: "微软雅黑";
 }
 
 ul {
   margin: 0;
+}
+
+.btn {
+  background: transparent;
+  padding: 5px 10px;
+  color: #757575;
+  font-size: 14px;
+  border: 1px solid #dedede;
+  border-radius: 1px;
+  outline: none;
+  margin:5px;
+}
+
+.btn--selected {
+  background: #43bf53;
+  color: #fff;
+  border-color: #43bf53;
+}
+
+.pc {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.pc .tip {
+  display: block;
+  font-size: 20px;
+  padding: 10px 20px;
+  border: 1px dashed #dedede;
+}
+
+.pc .main{
+	display: none;
+}
+
+.mb .tip {
+  display: none;
+}
+
+.mb .main{
+	display: block;
+}
+
+.panel{
+	margin-bottom: 20px;
+	border-top: 1px solid #efefef;
+	border-bottom: 1px solid #efefef;
+}
+.panel main {
+	height: 200px;
+}
+.panel_header{
+	padding: 10px;
+	color: #666;
+}
+.panel_footer{
+	font-size: 14px;
+	padding: 5px;
+}
+.panel_footer .panel_footer-item {
+	margin-bottom: 5px;
 }

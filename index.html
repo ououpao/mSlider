@@ -8,9 +8,77 @@
   <link rel="stylesheet" href="dist/mSlider.min.css">
   <link rel="stylesheet" href="index.css">
 </head>
-<body>
-  <div id="slider" class="slider">
-  </div>
+
+<body class="pc">
+  <section class="tip">
+    需要手动 F12 并打开模拟工具 :)
+  </section>
+  <main class="main">
+    <section class="panel">
+      <header class="panel_header">
+        1.轮播控制
+      </header>
+      <main class="slider"></main>
+      <footer class="panel_footer config_area">
+        <button class="btn btn--selected" data-key="autoPlay" data-value="true">autoPlay</button>
+        <button class="btn" data-action="pause" data-value="true">pause</button>
+        <button class="btn btn--selected" data-key="loop" data-value="true">loop</button>
+        <button class="btn" data-key="vertical" data-value="true">vertical</button>
+        <button class="btn" data-key="duration" data-value="500">500ms播放间隔</button>
+      </footer>
+    </section>
+    <section class="panel">
+      <header class="panel_header">
+        2.过渡效果
+      </header>
+      <main class="slider2"></main>
+      <footer class="panel_footer">
+        <div class="panel_footer-item">
+          <label>过渡类型：</label>
+          <button class="btn btn--primary">normal</button>
+          <button class="btn">fade</button>
+        </div>
+        <div class="panel_footer-item">
+          <label>时间函数：</label>
+          <button class="btn btn--primary">easy</button>
+          <button class="btn">easy-in</button>
+          <button class="btn">easy-out</button>
+        </div>
+      </footer>
+    </section>
+    <section class="panel">
+      <header class="panel_header">
+        3.指示器控制
+      </header>
+      <main class="slider3"></main>
+      <footer class="panel_footer">
+        <div class="panel_footer-item">
+          <label>类型：</label>
+          <button class="btn btn--primary">normal</button>
+          <button class="btn">circle</button>
+        </div>
+        <div class="panel_footer-item">
+          <label>位置：</label>
+          <button class="btn btn--primary">left</button>
+          <button class="btn">center</button>
+          <button class="btn">right</button>
+        </div>
+      </footer>
+    </section>
+    <section class="panel">
+      <header class="panel_header">
+        4.APIS
+      </header>
+      <main class="slider4"></main>
+      <footer class="panel_footer">
+        <button class="btn btn--primary">slideTo(2)</button>
+        <button class="btn">slidePrev</button>
+        <button class="btn">slideNext</button>
+        <button class="btn">pause</button>
+        <button class="btn">destroy</button>
+      </footer>
+    </section>
+  </main>
   <script src="dist/mSlider.min.js"></script>
   <script src="index.js"></script>
 </body>
