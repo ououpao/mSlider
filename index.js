@@ -1,17 +1,7 @@
 (function() {
   var slider
-
   var onMobile = false
-
   var ready = false
-
-  var slidersCls = [
-    '.slider',
-    '.slider2',
-    '.slider3',
-    '.slider4'
-  ]
-
   var initData = [
     'demo/img/slider1.png',
     'demo/img/slider2.png',
@@ -19,8 +9,6 @@
     'demo/img/slider4.png',
     'demo/img/slider5.png'
   ]
-
-  var instance = {}
 
   window.addEventListener('resize', switchMode, false)
 
@@ -35,7 +23,6 @@
     switchBodyCls(onMobile)
 
     if (onMobile && !ready) {
-      createSlider()
       ready = true
     }
   }
@@ -46,36 +33,34 @@
     cls.add(isMobile ? 'mb' : 'pc')
   }
 
-  function getConfig(slideCls) {
-    var configArea = document.querySelector(slideCls + ' .config_area')
-    var configs = configArea.nextSibling
-    var len = configs.length
-    var $config
-    var result = {}
-    var key
-    var dataset
-    while(len--) {
-      debugger;
-      $config = configs[len]
-      if($config.classList.contains('btn--selected') > -1) {
-        dataset = $config.dataset
-        result[dataset.key] = dataset.value
-      }
-    }
-    debugger;
-    return result
-  }
+  new mSlider({
+    el: '#demo1',
+    data: initData,
+    height: '200px'
+  })
 
-  function createSlider() {
-    slidersCls.forEach(function(cls, index) {
-      var config = getConfig(cls)
-      var opt = Object.assign({
-        el: cls,
-        data: initData,
-        height: '200px'
-      }, config)
+  new mSlider({
+    el: '#demo2',
+    data: initData,
+    height: '200px',
+    transtionType: 'fade'
 
-      instance['slide' + (index + 1)] = new mSlider(opt)
-    })
-  }
+  })
+
+  new mSlider({
+    el: '#demo3',
+    data: initData,
+    height: '200px',
+    vertical: true,
+    autoPlay: false
+  })
+
+  new mSlider({
+    el: '#demo4',
+    data: initData,
+    height: '200px',
+    indicatorType: 'circle',
+    indicatorPos: 'right'
+  })
+
 })()
