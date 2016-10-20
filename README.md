@@ -1,5 +1,6 @@
 ## mSlider
 简单实用的手机端滑动组件， 支持多种过渡效果，左右/垂直切换，指示器等。
+
 ![](https://img.shields.io/npm/v/eSlider.svg)  ![](https://img.shields.io/npm/dm/eSlider.svg)  ![](https://img.shields.io/packagist/l/doctrine/orm.svg)  
 
 ```javascript
