@@ -1,6 +1,5 @@
 ## mSlider
 简单实用的手机端滑动组件， 支持多种过渡效果，左右/垂直切换，指示器等。
-
 ![](https://img.shields.io/npm/v/eSlider.svg)  ![](https://img.shields.io/npm/dm/eSlider.svg)  ![](https://img.shields.io/packagist/l/doctrine/orm.svg)  
 
 ```javascript
@@ -162,21 +161,21 @@ new mSlider({
 // wrong
 new mSlider({
     data: [
-        '<div>slider1</div><span>wrong</span>',
+        '<div>slider1</div><div>wrong</div>',
     ]
 })
 // right
 new mSlider({
     data: [
-        '<div>slider1<span>right</span></div>',
+        '<div>slider1<div>right</div></div>',
     ]
 })
 ```
 
 3.对象  
 对象有两个属性：  
-`name`: 表示唯一标识(可用于slideTo跳转)。  
-`content`: slide内容, 可以是以上两种格式
+`name`: slide的名称, 表示唯一标识， 可用于`slideTo`方法的跳转。  
+`content`: slide内容, 可以是以上两种格式。
 ```javascript
 new mSlider({
     data: [{
@@ -215,7 +214,7 @@ new mSlider({
 })
 ```
 #### transtionType
-过渡效果的类型，支持滚动(normal),渐变(fade)
+过渡效果的类型，支持滚动(normal),透明度渐变(fade)
 #### transtionTimeFn
 过渡效果的完成时间函数，支持`css transition`属性的值
 #### indicatorPos
@@ -231,7 +230,7 @@ new mSlider({
 slider.slideTo(2)
 ```
 
-跳转到`name`属性为`food`的slide,若未找到则默认跳转到第一个。
+跳转到`name`属性为`food`的slide,若未找到则默认跳转到第一个slide。
 ```javascript
 slider.slideTo('food')
 ```
